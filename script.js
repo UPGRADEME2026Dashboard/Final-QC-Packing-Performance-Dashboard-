@@ -11,7 +11,8 @@ let currentMonth = 'All';
    LOAD CSV
 ========================== */
 
-Papa.parse('data.csv', {
+Papa.parse('data.csv',{
+
 download:true,
 header:true,
 skipEmptyLines:true,
@@ -19,26 +20,35 @@ skipEmptyLines:true,
 complete:function(results){
 
 allData = results.data
-.filter(r => Object.keys(r).length > 0)
+.filter(r=>Object.keys(r).length>0)
 .map(row=>({
 
 ...row,
 
-Job_Number:String(row.Job_Number||'').trim(),
+Job_Number:String(
+row.Job_Number||''
+).trim(),
 
-QC_Name:String(row.QC_Name||'')
+QC_Name:String(
+row.QC_Name||''
+)
 .replace(/-/g,'')
+.replace(/\s+/g,'')
 .trim(),
 
 Inspection_Status:String(
 row.Inspection_Status||''
 ).trim(),
 
-Date:String(row.Date||'').trim(),
+Date:String(
+row.Date||''
+).trim(),
 
 Inspection_By:String(
 row.Inspection_By||''
-).replace(/-/g,'')
+)
+.replace(/-/g,'')
+.replace(/\s+/g,'')
 .trim(),
 
 Category:String(
@@ -72,7 +82,6 @@ document.querySelectorAll('.year-btn')
 btn.addEventListener('click',()=>{
 
 currentYear = btn.innerText;
-
 applyFilters();
 
 });
@@ -86,7 +95,6 @@ document.querySelectorAll('.month-btn')
 btn.addEventListener('click',()=>{
 
 currentMonth = btn.innerText;
-
 applyFilters();
 
 });
@@ -94,10 +102,16 @@ applyFilters();
 });
 
 document.getElementById('qcFilter')
-?.addEventListener('change',applyFilters);
+?.addEventListener(
+'change',
+applyFilters
+);
 
 document.getElementById('packingFilter')
-?.addEventListener('change',applyFilters);
+?.addEventListener(
+'change',
+applyFilters
+);
 
 document.getElementById('resetBtn')
 ?.addEventListener('click',()=>{
@@ -105,8 +119,15 @@ document.getElementById('resetBtn')
 currentYear='All';
 currentMonth='All';
 
-document.getElementById('qcFilter').value='All';
-document.getElementById('packingFilter').value='All';
+if(document.getElementById('qcFilter'))
+document.getElementById(
+'qcFilter'
+).value='All';
+
+if(document.getElementById('packingFilter'))
+document.getElementById(
+'packingFilter'
+).value='All';
 
 updateDashboard(allData);
 
@@ -121,18 +142,23 @@ function applyFilters(){
 let filtered=[...allData];
 
 const qc =
-document.getElementById('qcFilter')?.value || 'All';
+document.getElementById(
+'qcFilter'
+)?.value || 'All';
 
 const packing =
-document.getElementById('packingFilter')?.value || 'All';
+document.getElementById(
+'packingFilter'
+)?.value || 'All';
 
 /* YEAR */
 
 if(currentYear!=='All'){
 
-filtered=filtered.filter(x=>
+filtered = filtered.filter(x=>
 
-String(x.Year).trim()===currentYear
+String(x.Year)
+.trim()===currentYear
 
 );
 
@@ -142,9 +168,10 @@ String(x.Year).trim()===currentYear
 
 if(currentMonth!=='All'){
 
-filtered=filtered.filter(x=>
+filtered = filtered.filter(x=>
 
-String(x.Month).trim()===currentMonth
+String(x.Month)
+.trim()===currentMonth
 
 );
 
@@ -154,7 +181,7 @@ String(x.Month).trim()===currentMonth
 
 if(qc!=='All'){
 
-filtered=filtered.filter(x=>
+filtered = filtered.filter(x=>
 
 x.QC_Name===qc
 
@@ -166,7 +193,7 @@ x.QC_Name===qc
 
 if(packing!=='All'){
 
-filtered=filtered.filter(x=>
+filtered = filtered.filter(x=>
 
 x.Inspection_By===packing
 
@@ -187,53 +214,93 @@ function updateDashboard(data){
 const total = data.length;
 
 const pass = data.filter(x=>
+
 x.Inspection_Status==='Pass'
+
 ).length;
 
 const reject = data.filter(x=>
+
 x.Inspection_Status==='Reject'
+
 ).length;
 
 const passRate = total ?
-((pass/total)*100).toFixed(1) : 0;
+
+((pass/total)*100)
+.toFixed(1)
+
+:0;
 
 const rejectRate = total ?
-((reject/total)*100).toFixed(1) : 0;
+
+((reject/total)*100)
+.toFixed(1)
+
+:0;
 
 /* KPI */
 
-document.getElementById('totalDevices').innerText = total;
-document.getElementById('totalPass').innerText = pass;
-document.getElementById('totalReject').innerText = reject;
-document.getElementById('passRate').innerText = passRate+'%';
-document.getElementById('rejectRate').innerText = rejectRate+'%';
+document.getElementById(
+'totalDevices'
+).innerText = total;
+
+document.getElementById(
+'totalPass'
+).innerText = pass;
+
+document.getElementById(
+'totalReject'
+).innerText = reject;
+
+document.getElementById(
+'passRate'
+).innerText = passRate+'%';
+
+document.getElementById(
+'rejectRate'
+).innerText = rejectRate+'%';
+
+/* SUMMARY */
 
 if(document.getElementById('sTotal'))
-document.getElementById('sTotal').innerText = total;
+document.getElementById(
+'sTotal'
+).innerText = total;
 
 if(document.getElementById('sPass'))
-document.getElementById('sPass').innerText = pass;
+document.getElementById(
+'sPass'
+).innerText = pass;
 
 if(document.getElementById('sReject'))
-document.getElementById('sReject').innerText = reject;
+document.getElementById(
+'sReject'
+).innerText = reject;
 
 if(document.getElementById('sPassRate'))
-document.getElementById('sPassRate').innerText = passRate+'%';
+document.getElementById(
+'sPassRate'
+).innerText =
+passRate+'%';
 
 if(document.getElementById('sRejectRate'))
-document.getElementById('sRejectRate').innerText = rejectRate+'%';
+document.getElementById(
+'sRejectRate'
+).innerText =
+rejectRate+'%';
 
 /* ==========================
    REJECT TABLE
 ========================== */
 
 const rejectedOnly = data.filter(x=>
+
 x.Inspection_Status==='Reject'
+
 );
 
 let rows='';
-
-/* كل الريجكت بدون limit */
 
 rejectedOnly.forEach(r=>{
 
@@ -242,7 +309,9 @@ rows += `
 <tr>
 <td>${r.Job_Number||''}</td>
 <td>${r.QC_Name||''}</td>
-<td class="reject">${r.Inspection_Status||''}</td>
+<td class="reject">
+${r.Inspection_Status||''}
+</td>
 <td>${r.Date||''}</td>
 <td>${r.Inspection_By||''}</td>
 <td>${r.Category||''}</td>
@@ -252,36 +321,43 @@ rows += `
 
 });
 
-document.getElementById('tableBody').innerHTML = rows;
+document.getElementById(
+'tableBody'
+).innerHTML = rows;
 
 /* ==========================
    DONUT
 ========================== */
 
-if(pieChart) pieChart.destroy();
+if(pieChart)
+pieChart.destroy();
 
-const donutCenter = {
+const donutCenter={
 
 id:'donutCenter',
 
 afterDraw(chart){
 
-const {ctx} = chart;
-const meta = chart.getDatasetMeta(0);
+const {ctx}=chart;
+const meta=
+chart.getDatasetMeta(0);
 
-if(!meta.data.length) return;
+if(!meta.data.length)
+return;
 
-const x = meta.data[0].x;
-const y = meta.data[0].y;
+const x=meta.data[0].x;
+const y=meta.data[0].y;
 
 ctx.save();
 
 ctx.textAlign='center';
 ctx.textBaseline='middle';
 
-/* PASS % */
+/* PASS */
 
-ctx.font='bold 30px Segoe UI';
+ctx.font=
+'bold 28px Segoe UI';
+
 ctx.fillStyle='#ffffff';
 
 ctx.fillText(
@@ -290,9 +366,11 @@ x,
 y-18
 );
 
-/* PASS */
+/* LABEL */
 
-ctx.font='bold 15px Segoe UI';
+ctx.font=
+'bold 16px Segoe UI';
+
 ctx.fillStyle='#16d1ff';
 
 ctx.fillText(
@@ -303,8 +381,10 @@ y+10
 
 /* REJECT */
 
-ctx.font='bold 13px Segoe UI';
-ctx.fillStyle='#ff2f67';
+ctx.font=
+'bold 13px Segoe UI';
+
+ctx.fillStyle='#ff2b67';
 
 ctx.fillText(
 rejectRate+'% Reject',
@@ -320,7 +400,9 @@ ctx.restore();
 
 pieChart = new Chart(
 
-document.getElementById('pieChart'),
+document.getElementById(
+'pieChart'
+),
 
 {
 
@@ -328,19 +410,27 @@ type:'doughnut',
 
 data:{
 
-labels:['Pass','Reject'],
+labels:[
+'Pass',
+'Reject'
+],
 
 datasets:[{
 
-data:[pass,reject],
+data:[
+pass,
+reject
+],
 
 backgroundColor:[
+
 '#16d1ff',
 '#ff005d'
+
 ],
 
 borderWidth:0,
-radius:'72%'
+radius:'76%'
 
 }]
 
@@ -353,12 +443,22 @@ maintainAspectRatio:false,
 cutout:'68%',
 
 plugins:{
-legend:{display:false}
+
+legend:{
+display:false
+},
+
+tooltip:{
+enabled:true
+}
+
 }
 
 },
 
-plugins:[donutCenter]
+plugins:[
+donutCenter
+]
 
 });
 
@@ -370,19 +470,25 @@ const months={};
 
 data.forEach(r=>{
 
-const m=r.Month||'Unknown';
+const m=
+r.Month||'Unknown';
 
-if(!months[m]) months[m]=0;
+if(!months[m])
+months[m]=0;
 
 months[m]++;
 
 });
 
-if(monthlyChart) monthlyChart.destroy();
+if(monthlyChart)
+monthlyChart.destroy();
 
-monthlyChart=new Chart(
+monthlyChart =
+new Chart(
 
-document.getElementById('monthlyChart'),
+document.getElementById(
+'monthlyChart'
+),
 
 {
 
@@ -390,13 +496,17 @@ type:'bar',
 
 data:{
 
-labels:Object.keys(months),
+labels:
+Object.keys(months),
 
 datasets:[{
 
-data:Object.values(months),
+data:
+Object.values(months),
 
-backgroundColor:'#16d1ff',
+backgroundColor:
+'#16d1ff',
+
 borderRadius:6
 
 }]
@@ -410,7 +520,9 @@ maintainAspectRatio:false,
 
 plugins:{
 
-legend:{display:false},
+legend:{
+display:false
+},
 
 datalabels:{
 
@@ -421,7 +533,7 @@ anchor:'end',
 align:'top',
 
 font:{
-size:11,
+size:12,
 weight:'bold'
 }
 
@@ -432,32 +544,43 @@ weight:'bold'
 scales:{
 
 x:{
-ticks:{color:'#fff'},
-grid:{display:false}
+ticks:{
+color:'#fff'
+},
+grid:{
+display:false
+}
 },
 
 y:{
-ticks:{display:false},
-grid:{display:false}
+ticks:{
+display:false
+},
+grid:{
+display:false
+}
 }
 
 }
 
 },
 
-plugins:[ChartDataLabels]
+plugins:[
+ChartDataLabels
+]
 
 });
 
 /* ==========================
-   REJECT CATEGORY
+   CATEGORY
 ========================== */
 
 const categories={};
 
 rejectedOnly.forEach(r=>{
 
-const c=r.Category||'Unknown';
+const c =
+r.Category||'Unknown';
 
 if(!categories[c])
 categories[c]=0;
@@ -469,9 +592,12 @@ categories[c]++;
 if(categoryChart)
 categoryChart.destroy();
 
-categoryChart=new Chart(
+categoryChart =
+new Chart(
 
-document.getElementById('categoryChart'),
+document.getElementById(
+'categoryChart'
+),
 
 {
 
@@ -479,13 +605,20 @@ type:'bar',
 
 data:{
 
-labels:Object.keys(categories),
+labels:
+Object.keys(
+categories
+),
 
 datasets:[{
 
-data:Object.values(categories),
+data:
+Object.values(
+categories
+),
 
-backgroundColor:'#ff005d',
+backgroundColor:
+'#ff005d',
 
 borderRadius:6
 
@@ -502,7 +635,9 @@ maintainAspectRatio:false,
 
 plugins:{
 
-legend:{display:false},
+legend:{
+display:false
+},
 
 datalabels:{
 
@@ -524,24 +659,93 @@ weight:'bold'
 scales:{
 
 x:{
-ticks:{display:false},
-grid:{display:false}
+ticks:{
+display:false
+},
+grid:{
+display:false
+}
 },
 
 y:{
 ticks:{
 color:'#fff',
-font:{size:10}
+font:{
+size:10
+}
 },
-grid:{display:false}
+grid:{
+display:false
+}
 }
 
 }
 
 },
 
-plugins:[ChartDataLabels]
+plugins:[
+ChartDataLabels
+]
 
 });
+
+/* ==========================
+   TOP REJECT CATEGORIES
+========================== */
+
+let top='';
+
+Object.entries(categories)
+
+.sort((a,b)=>
+
+b[1]-a[1]
+
+)
+
+.slice(0,5)
+
+.forEach(item=>{
+
+top += `
+
+<div class="category-row">
+
+<div class="category-head">
+
+<span>${item[0]}</span>
+
+<span class="red-text">
+
+${item[1]}
+
+</span>
+
+</div>
+
+<div class="bar-bg">
+
+<div class="bar-fill"
+style="width:${item[1]*2}%">
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+if(
+document.getElementById(
+'topCategories'
+)
+)
+
+document.getElementById(
+'topCategories'
+).innerHTML = top;
 
 }
