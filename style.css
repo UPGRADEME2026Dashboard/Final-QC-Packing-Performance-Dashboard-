@@ -120,9 +120,9 @@ select,
 .year-btn,
 .month-btn{
 
-appearance:none !important;
--webkit-appearance:none !important;
--moz-appearance:none !important;
+appearance:none!important;
+-webkit-appearance:none!important;
+-moz-appearance:none!important;
 
 height:34px;
 border:none;
@@ -330,7 +330,7 @@ margin-bottom:15px;
 ========================= */
 
 .table-scroll{
-height:230px;
+height:250px;
 overflow-y:auto;
 }
 
