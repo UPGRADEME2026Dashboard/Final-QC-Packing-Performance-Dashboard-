@@ -8,479 +8,11 @@
 
 <title>Final QC & Packing Performance Dashboard</title>
 
+<link rel="stylesheet" href="style.css">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-<style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
-
-body{
-background:#02051c;
-padding:10px;
-overflow:hidden;
-color:white;
-}
-
-/* DASHBOARD */
-
-.dashboard{
-
-width:100%;
-height:97vh;
-
-background:
-linear-gradient(180deg,#02041a,#040b34);
-
-border-radius:22px;
-
-border:1px solid #28156d;
-
-box-shadow:
-0 0 30px rgba(122,0,255,.22);
-
-overflow:hidden;
-
-}
-
-/* HEADER */
-
-.top-header{
-
-height:80px;
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-border-bottom:1px solid rgba(255,255,255,.05);
-
-}
-
-.logo{
-
-height:65px;
-
-object-fit:contain;
-
-filter:
-drop-shadow(0 0 10px rgba(255,255,255,.2));
-
-}
-
-.title{
-
-text-align:center;
-
-padding:8px;
-
-font-size:18px;
-font-weight:bold;
-
-color:white;
-
-text-shadow:
-0 0 10px #00bfff;
-
-}
-
-/* MAIN */
-
-.main{
-
-display:grid;
-
-grid-template-columns:70px 1fr;
-
-gap:10px;
-
-padding:10px;
-
-height:calc(100% - 120px);
-
-}
-
-/* SIDEBAR */
-
-.sidebar{
-
-display:flex;
-flex-direction:column;
-gap:7px;
-
-}
-
-.filter-btn,
-select{
-
-height:32px;
-
-border:none;
-
-border-radius:5px;
-
-background:
-linear-gradient(180deg,#17c9ff,#0b5ecf);
-
-color:white;
-
-font-size:12px;
-font-weight:600;
-
-padding:0 5px;
-
-cursor:pointer;
-
-box-shadow:
-0 0 10px rgba(0,191,255,.3);
-
-}
-
-.reset-btn{
-
-background:
-linear-gradient(180deg,#ff0055,#8b0037);
-
-}
-
-/* CONTENT */
-
-.content{
-
-display:flex;
-flex-direction:column;
-gap:10px;
-
-overflow:hidden;
-
-}
-
-/* KPI */
-
-.kpi-grid{
-
-display:grid;
-
-grid-template-columns:1fr 1.1fr 1fr;
-
-gap:10px;
-
-}
-
-.kpi-side{
-
-display:flex;
-flex-direction:column;
-gap:10px;
-
-}
-
-.card{
-
-height:65px;
-
-background:#03082c;
-
-border-radius:12px;
-
-border:1px solid #8428ff;
-
-box-shadow:
-0 0 15px rgba(128,0,255,.18);
-
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-
-}
-
-.card.red{
-
-border:1px solid #ff0048;
-
-box-shadow:
-0 0 15px rgba(255,0,72,.15);
-
-}
-
-.card h3{
-
-font-size:13px;
-
-margin-bottom:6px;
-
-}
-
-.card p{
-
-font-size:22px;
-font-weight:bold;
-
-line-height:1;
-
-}
-
-.center-card{
-
-height:140px;
-
-}
-
-/* CHARTS */
-
-.charts-grid{
-
-display:grid;
-
-grid-template-columns:1fr 1fr 1.4fr;
-
-gap:10px;
-
-height:250px;
-
-}
-
-.chart-box{
-
-background:#03082c;
-
-border-radius:12px;
-
-border:1px solid #8428ff;
-
-padding:10px;
-
-position:relative;
-
-overflow:hidden;
-
-}
-
-.chart-title{
-
-position:absolute;
-
-top:-10px;
-left:50%;
-
-transform:translateX(-50%);
-
-background:#071b68;
-
-padding:3px 15px;
-
-border-radius:5px;
-
-font-size:12px;
-font-weight:bold;
-
-border:1px solid #9f2fff;
-
-}
-
-.chart-box canvas{
-
-height:200px !important;
-
-margin-top:15px;
-
-}
-
-/* BOTTOM */
-
-.bottom-grid{
-
-display:grid;
-
-grid-template-columns:2fr .7fr .7fr;
-
-gap:10px;
-
-height:260px;
-
-}
-
-/* TABLE */
-
-.table-box{
-
-background:#03082c;
-
-border-radius:12px;
-
-border:1px solid #8428ff;
-
-padding:10px;
-
-overflow:hidden;
-
-}
-
-.table-title{
-
-text-align:center;
-
-font-size:13px;
-font-weight:bold;
-
-margin-bottom:7px;
-
-color:#ff2f67;
-
-}
-
-.table-scroll{
-
-height:205px;
-
-overflow-y:auto;
-
-}
-
-table{
-
-width:100%;
-
-border-collapse:collapse;
-
-}
-
-th{
-
-background:#4f158d;
-
-padding:7px;
-
-font-size:11px;
-
-position:sticky;
-top:0;
-
-}
-
-td{
-
-padding:7px;
-
-font-size:11px;
-
-text-align:center;
-
-border-bottom:1px solid rgba(255,255,255,.04);
-
-}
-
-.reject{
-
-color:#ff0048;
-
-font-weight:bold;
-
-}
-
-/* SUMMARY */
-
-.summary-box{
-
-background:#03082c;
-
-border-radius:12px;
-
-border:1px solid #8428ff;
-
-padding:10px;
-
-overflow:hidden;
-
-}
-
-.summary-title{
-
-text-align:center;
-
-font-size:13px;
-font-weight:bold;
-
-margin-bottom:15px;
-
-}
-
-.summary-item{
-
-display:flex;
-justify-content:space-between;
-
-margin-bottom:14px;
-
-font-size:12px;
-
-}
-
-.blue{
-
-color:#14c9ff;
-font-weight:bold;
-}
-
-.red-text{
-
-color:#ff2f67;
-font-weight:bold;
-}
-
-/* CATEGORY */
-
-.category-row{
-
-margin-bottom:15px;
-
-}
-
-.category-head{
-
-display:flex;
-justify-content:space-between;
-
-font-size:11px;
-
-margin-bottom:5px;
-
-}
-
-.bar-bg{
-
-height:7px;
-
-background:#121212;
-
-border-radius:20px;
-
-overflow:hidden;
-
-}
-
-.bar-fill{
-
-height:100%;
-
-background:
-linear-gradient(90deg,#ff005d,#ff428f);
-
-}
-
-</style>
-<head>
-
-<meta charset="UTF-8">
-
-<link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -488,272 +20,267 @@ linear-gradient(90deg,#ff005d,#ff428f);
 
 <div class="dashboard">
 
-<!-- HEADER -->
+    <!-- HEADER -->
 
-<div class="top-header">
+    <div class="top-header">
 
-<img src="upgrade-logo.png" class="logo">
+        <img src="upgrade-logo.png" class="logo">
 
-</div>
+    </div>
 
-<div class="title">
+    <div class="title">
 
-Final QC & Packing Performance Dashboard
+        Final QC & Packing Performance Dashboard
 
-</div>
+    </div>
 
-<!-- MAIN -->
+    <!-- MAIN -->
 
-<div class="main">
+    <div class="main">
 
-<!-- SIDEBAR -->
+        <!-- SIDEBAR -->
 
-<div class="sidebar">
+        <div class="sidebar">
 
-<button class="filter-btn year-btn">2024</button>
-<button class="filter-btn year-btn">2025</button>
-<button class="filter-btn year-btn">2026</button>
+            <button class="filter-btn year-btn">2024</button>
+            <button class="filter-btn year-btn">2025</button>
+            <button class="filter-btn year-btn">2026</button>
 
-<select id="qcFilter">
+            <select id="qcFilter">
 
-<option value="All">QC Team</option>
+                <option value="All">QC Team</option>
 
-<option>Fady</option>
-<option>M.Samir</option>
-<option>Hatem</option>
-<option>Hossam</option>
-<option>A.Lotfy</option>
+                <option>Fady</option>
+                <option>M.Samir</option>
+                <option>Hatem</option>
+                <option>Hossam</option>
+                <option>A.Lotfy</option>
 
-</select>
+            </select>
 
-<select id="packingFilter">
+            <select id="packingFilter">
 
-<option value="All">Packing Team</option>
+                <option value="All">Packing Team</option>
 
-<option>M.Basiuony</option>
-<option>Ehab Sadar</option>
-<option>M.elsayed</option>
+                <option>M.Basiuony</option>
+                <option>EhabSadar</option>
+                <option>M.elsayed</option>
 
-</select>
+            </select>
 
-<button class="filter-btn reset-btn" id="resetBtn">
+            <button class="filter-btn reset-btn" id="resetBtn">
 
-Reset
+                Reset
 
-</button>
+            </button>
 
-<button class="filter-btn month-btn">Jan</button>
-<button class="filter-btn month-btn">Feb</button>
-<button class="filter-btn month-btn">Mar</button>
-<button class="filter-btn month-btn">Apr</button>
-<button class="filter-btn month-btn">May</button>
-<button class="filter-btn month-btn">Jun</button>
-<button class="filter-btn month-btn">Jul</button>
-<button class="filter-btn month-btn">Aug</button>
-<button class="filter-btn month-btn">Sep</button>
-<button class="filter-btn month-btn">Oct</button>
-<button class="filter-btn month-btn">Nov</button>
-<button class="filter-btn month-btn">Dec</button>
+            <button class="filter-btn month-btn">Jan</button>
+            <button class="filter-btn month-btn">Feb</button>
+            <button class="filter-btn month-btn">Mar</button>
+            <button class="filter-btn month-btn">Apr</button>
+            <button class="filter-btn month-btn">May</button>
+            <button class="filter-btn month-btn">Jun</button>
+            <button class="filter-btn month-btn">Jul</button>
+            <button class="filter-btn month-btn">Aug</button>
+            <button class="filter-btn month-btn">Sep</button>
+            <button class="filter-btn month-btn">Oct</button>
+            <button class="filter-btn month-btn">Nov</button>
+            <button class="filter-btn month-btn">Dec</button>
 
-</div>
+        </div>
 
-<!-- CONTENT -->
+        <!-- CONTENT -->
 
-<div class="content">
+        <div class="content">
 
-<!-- KPI -->
+            <!-- KPI -->
 
-<div class="kpi-grid">
+            <div class="kpi-grid">
 
-<div class="kpi-side">
+                <div class="kpi-side">
 
-<div class="card">
+                    <div class="card">
 
-<h3>TOTAL PASS</h3>
+                        <h3>TOTAL PASS</h3>
+                        <p id="totalPass">0</p>
 
-<p id="totalPass">0</p>
+                    </div>
 
-</div>
+                    <div class="card">
 
-<div class="card">
+                        <h3>PASS RATE</h3>
+                        <p id="passRate">0%</p>
 
-<h3>PASS RATE</h3>
+                    </div>
 
-<p id="passRate">0%</p>
+                </div>
 
-</div>
+                <div class="card center-card">
 
-</div>
+                    <h3>TOTAL DEVICES</h3>
+                    <p id="totalDevices">0</p>
 
-<div class="card center-card">
+                </div>
 
-<h3>TOTAL DEVICES</h3>
+                <div class="kpi-side">
 
-<p id="totalDevices">0</p>
+                    <div class="card red">
 
-</div>
+                        <h3>TOTAL REJECT</h3>
+                        <p id="totalReject">0</p>
 
-<div class="kpi-side">
+                    </div>
 
-<div class="card red">
+                    <div class="card red">
 
-<h3>TOTAL REJECT</h3>
+                        <h3>REJECT RATE</h3>
+                        <p id="rejectRate">0%</p>
 
-<p id="totalReject">0</p>
+                    </div>
 
-</div>
+                </div>
 
-<div class="card red">
+            </div>
 
-<h3>REJECT RATE</h3>
+            <!-- CHARTS -->
 
-<p id="rejectRate">0%</p>
+            <div class="charts-grid">
 
-</div>
+                <div class="chart-box">
 
-</div>
+                    <div class="chart-title">
 
-</div>
+                        Pass Vs Reject Ratio
 
-<!-- CHARTS -->
+                    </div>
 
-<div class="charts-grid">
+                    <canvas id="pieChart"></canvas>
 
-<div class="chart-box">
+                </div>
 
-<div class="chart-title">
+                <div class="chart-box">
 
-Pass Vs Reject Ratio
+                    <div class="chart-title">
 
-</div>
+                        Reject Categories
 
-<canvas id="pieChart"></canvas>
+                    </div>
 
-</div>
+                    <canvas id="categoryChart"></canvas>
 
-<div class="chart-box">
+                </div>
 
-<div class="chart-title">
+                <div class="chart-box">
 
-Reject Categories
+                    <div class="chart-title">
 
-</div>
+                        Monthly Packing Department Quality Trend
 
-<canvas id="categoryChart"></canvas>
+                    </div>
 
-</div>
+                    <canvas id="monthlyChart"></canvas>
 
-<div class="chart-box">
+                </div>
 
-<div class="chart-title">
+            </div>
 
-Monthly Packing Department Quality Trend
+            <!-- BOTTOM -->
 
-</div>
+            <div class="bottom-grid">
 
-<canvas id="monthlyChart"></canvas>
+                <!-- TABLE -->
 
-</div>
+                <div class="table-box">
 
-</div>
+                    <div class="table-title">
 
-<!-- BOTTOM -->
+                        Rejected Devices Only
 
-<div class="bottom-grid">
+                    </div>
 
-<!-- TABLE -->
+                    <div class="table-scroll">
 
-<div class="table-box">
+                        <table>
 
-<div class="table-title">
+                            <thead>
 
-Rejected Devices Only
+                                <tr>
 
-</div>
+                                    <th>Job_Number</th>
+                                    <th>QC_Name</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Inspection_By</th>
+                                    <th>Category</th>
 
-<div class="table-scroll">
+                                </tr>
 
-<table>
+                            </thead>
 
-<thead>
+                            <tbody id="tableBody"></tbody>
 
-<tr>
+                        </table>
 
-<th>Job_Number</th>
-<th>QC_Name</th>
-<th>Status</th>
-<th>Date</th>
-<th>Inspection_By</th>
-<th>Category</th>
+                    </div>
 
-</tr>
+                </div>
 
-</thead>
+                <!-- SUMMARY -->
 
-<tbody id="tableBody"></tbody>
+                <div class="summary-box">
 
-</table>
+                    <div class="summary-title">
 
-</div>
+                        Summary (All Time)
 
-</div>
+                    </div>
 
-<!-- SUMMARY -->
+                    <div class="summary-item">
+                        <span>Total Devices</span>
+                        <span class="blue" id="sTotal">0</span>
+                    </div>
 
-<div class="summary-box">
+                    <div class="summary-item">
+                        <span>Total Pass</span>
+                        <span class="blue" id="sPass">0</span>
+                    </div>
 
-<div class="summary-title">
+                    <div class="summary-item">
+                        <span>Total Reject</span>
+                        <span class="red-text" id="sReject">0</span>
+                    </div>
 
-Summary (All Time)
+                    <div class="summary-item">
+                        <span>Pass Rate</span>
+                        <span class="blue" id="sPassRate">0%</span>
+                    </div>
 
-</div>
+                    <div class="summary-item">
+                        <span>Reject Rate</span>
+                        <span class="red-text" id="sRejectRate">0%</span>
+                    </div>
 
-<div class="summary-item">
-<span>Total Devices</span>
-<span class="blue" id="sTotal">0</span>
-</div>
+                </div>
 
-<div class="summary-item">
-<span>Total Pass</span>
-<span class="blue" id="sPass">0</span>
-</div>
+                <!-- TOP REJECT -->
 
-<div class="summary-item">
-<span>Total Reject</span>
-<span class="red-text" id="sReject">0</span>
-</div>
+                <div class="summary-box">
 
-<div class="summary-item">
-<span>Pass Rate</span>
-<span class="blue" id="sPassRate">0%</span>
-</div>
+                    <div class="summary-title">
 
-<div class="summary-item">
-<span>Reject Rate</span>
-<span class="red-text" id="sRejectRate">0%</span>
-</div>
+                        Top Reject Categories
 
-</div>
+                    </div>
 
-<!-- TOP -->
+                    <div id="topCategories"></div>
 
-<div class="summary-box">
+                </div>
 
-<div class="summary-title">
+            </div>
 
-Top Reject Categories
+        </div>
 
-</div>
-
-<div id="topCategories"></div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
+    </div>
 
 </div>
 
