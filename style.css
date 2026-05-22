@@ -19,9 +19,9 @@ text-rendering:optimizeLegibility;
 html,
 body{
 width:100%;
-height:100%;
+min-height:100%;
 background:#02051c;
-overflow:hidden;
+overflow:auto;
 color:#fff;
 }
 
@@ -54,7 +54,7 @@ scrollbar-color:#15cfff #08112f;
 
 .dashboard{
 width:100%;
-height:100vh;
+min-height:100vh;
 background:linear-gradient(180deg,#02041a,#040b34);
 display:flex;
 flex-direction:column;
@@ -254,9 +254,9 @@ height:165px;
 
 .charts-grid{
 display:grid;
-grid-template-columns:.85fr 1fr 1.4fr;
+grid-template-columns:.70fr 1.25fr 1.55fr;
 gap:10px;
-height:285px;
+height:340px;
 }
 
 .chart-box{
@@ -284,10 +284,10 @@ white-space:nowrap;
 
 .chart-box canvas{
 width:100%!important;
-height:185px!important;
-margin-top:16px;
+height:250px!important;
+margin-top:18px;
 filter:none!important;
-image-rendering:auto;
+image-rendering:crisp-edges;
 }
 
 /* =========================
@@ -296,9 +296,9 @@ image-rendering:auto;
 
 .bottom-grid{
 display:grid;
-grid-template-columns:2.2fr .7fr .8fr;
+grid-template-columns:2fr .8fr 1fr;
 gap:10px;
-height:290px;
+height:320px;
 }
 
 .table-box,
