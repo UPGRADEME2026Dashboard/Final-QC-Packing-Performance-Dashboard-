@@ -13,15 +13,10 @@
 <body>
     <div class="dashboard-container">
         <header class="dashboard-header">
-            <div class="header-left">
-                <span class="brand-sub">AS GOOD AS NEW</span>
-            </div>
-            <div class="header-center" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-                <img src="upgrade-logo.png" alt="Upgrade Logo" class="brand-logo" onerror="this.style.display='none'">
-                <div>
-                    <h1 class="glow-text">UPGRADE</h1>
-                    <h2 class="sub-glow-text">Final QC & Packing Performance Dashboard</h2>
-                </div>
+            <div class="header-left"></div>
+            <div class="header-center">
+                <img src="upgrade-logo.png" alt="Upgrade" class="brand-logo" onerror="this.style.display='none'">
+                <h2 class="sub-glow-text">Final QC & Packing Performance Dashboard</h2>
             </div>
             <div class="header-right">
                 <i class="fas fa-sun theme-toggle-btn" id="themeToggleBtn" title="Toggle Light/Dark Mode"></i>
@@ -91,76 +86,70 @@
                 </div>
 
                 <div class="main-vertical-grid">
-                    
-                    <div class="grid-column">
-                        <div class="panel packing-qc-panel custom-scroll" style="flex: 2;">
+                    <div class="grid-column qc-performance-col">
+                        <div class="panel packing-qc-panel custom-scroll">
                             <h3 class="panel-title glow-title">Total Devices vs Reject Rate (Packing & QC)</h3>
                             <div id="packingQcContent" class="packing-qc-wrapper"></div>
                         </div>
-                        <div class="panel small-chart" style="flex: 1;">
-                            <h3 class="panel-title glow-title">Pass Vs Reject Ratio</h3>
-                            <div class="canvas-container">
-                                <canvas id="ratioChart"></canvas>
-                            </div>
-                        </div>
-                        <div class="panel summary-panel custom-scroll" style="flex: 1;">
-                            <h3 class="panel-title glow-title" style="text-align: left;">Summary (All Time)</h3>
-                            <ul class="summary-list">
-                                <li><span><i class="fas fa-mobile-alt"></i> Total Devices</span> <span id="sumTotal">0</span></li>
-                                <li><span><i class="fas fa-check-square" style="color: #00d2ff;"></i> Total Pass</span> <span id="sumPass">0</span></li>
-                                <li><span><i class="fas fa-times-circle red-text"></i> Total Reject</span> <span id="sumReject" class="red-text">0</span></li>
-                                <li><span><i class="fas fa-percentage" style="color: #00d2ff;"></i> Pass Rate</span> <span id="sumPassRate">0%</span></li>
-                                <li><span><i class="fas fa-chart-pie" class="red-text"></i> Reject Rate</span> <span id="sumRejectRate" class="red-text">0%</span></li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <div class="grid-column">
-                        <div class="panel reject-categories-panel custom-scroll" style="flex: 2;">
-                            <h3 class="panel-title glow-title">Reject Categories</h3>
-                            <div class="categories-list" id="rejectCategoriesList"></div>
-                        </div>
-                        <div class="panel small-chart" style="flex: 1.2;">
-                            <h3 class="panel-title glow-title">Annual Total (Devices)</h3>
-                            <div class="canvas-container">
-                                <canvas id="annualTotalChart"></canvas>
+                        <div class="lower-insights-grid">
+                            <div class="panel small-chart ratio-panel">
+                                <h3 class="panel-title glow-title">Pass Vs Reject Ratio</h3>
+                                <div class="canvas-container">
+                                    <canvas id="ratioChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="panel small-chart annual-total-panel">
+                                <h3 class="panel-title glow-title">Annual Total (Devices)</h3>
+                                <div class="canvas-container">
+                                    <canvas id="annualTotalChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="grid-column large-col">
-                        <div class="panel chart-panel" style="flex: 1;">
+                        <div class="panel chart-panel">
                             <h3 class="panel-title chart-label glow-title">Monthly Packing Department Quality Trend</h3>
                             <div class="canvas-container">
                                 <canvas id="monthlyChart"></canvas>
                             </div>
                         </div>
-                        <div class="panel chart-panel" style="flex: 1;">
+
+                        <div class="panel chart-panel">
                             <h3 class="panel-title chart-label glow-title">Annual Performance Overview</h3>
                             <div class="canvas-container">
                                 <canvas id="annualChart"></canvas>
                             </div>
                         </div>
-                        <div class="panel data-table-panel custom-scroll" style="flex: 1.5;">
-                            <h3 class="panel-title glow-title red-text" style="text-align: left; padding-left: 10px;">Rejected Devices Only</h3>
-                            <div class="table-container custom-scroll">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Job Number</th>
-                                            <th>QC Name</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Inspection By</th>
-                                            <th>Category</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="rejectedTableBody"></tbody>
-                                </table>
+
+                        <div class="rejects-bottom-grid">
+                            <div class="panel reject-categories-panel">
+                                <h3 class="panel-title glow-title">Reject Categories</h3>
+                                <div class="categories-list custom-scroll" id="rejectCategoriesList"></div>
+                            </div>
+
+                            <div class="panel data-table-panel">
+                                <h3 class="panel-title glow-title red-text">Rejected Devices Only</h3>
+                                <div class="table-container custom-scroll">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Job Number</th>
+                                                <th>QC Name</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Inspection By</th>
+                                                <th>Category</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="rejectedTableBody"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
