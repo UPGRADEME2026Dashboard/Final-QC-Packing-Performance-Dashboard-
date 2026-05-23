@@ -173,35 +173,34 @@ document.addEventListener('DOMContentLoaded', function() {
         let passPct = total > 0 ? ((pass / total) * 100).toFixed(2) : "0.00";
         let rejectPct = total > 0 ? ((reject / total) * 100).toFixed(2) : "0.00";
 
-        document.getElementById('kpiTotalDevices').textContent = total;
-        document.getElementById('kpiTotalPass').textContent = pass;
-        document.getElementById('kpiTotalReject').textContent = reject;
-        document.getElementById('kpiPassRate').textContent = passPct + '%';
-        document.getElementById('kpiRejectRate').textContent = rejectPct + '%';
+        const mapping = {
+            'kpiTotalDevices': total, 'kpiTotalPass': pass, 'kpiTotalReject': reject,
+            'kpiPassRate': passPct + '%', 'kpiRejectRate': rejectPct + '%',
+            'sumTotal': total, 'sumPass': pass, 'sumReject': reject,
+            'sumPassRate': passPct + '%', 'sumRejectRate': rejectPct + '%'
+        };
 
-        document.getElementById('sumTotal').textContent = total;
-        document.getElementById('sumPass').textContent = pass;
-        document.getElementById('sumReject').textContent = reject;
-        document.getElementById('sumPassRate').textContent = passPct + '%';
-        document.getElementById('sumRejectRate').textContent = rejectPct + '%';
+        Object.keys(mapping).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = mapping[id];
+        });
     }
 
     function updateTable(data) {
-        let tbody = document.getElementById('rejectedTableBody');
+        const tbody = document.getElementById('rejectedTableBody');
+        if (!tbody) return; // حماية إضافية
         tbody.innerHTML = '';
         
-        // Strict logic: ONLY display 'Reject' rows in the table
         let tableRows = data.filter(d => d.Inspection_Status === 'Reject');
-
         tableRows.forEach(row => {
             let tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${row.Job_Number}</td>
-                <td>${row.QC_Name}</td>
-                <td class="red-text">${row.Inspection_Status}</td>
-                <td>${row.Date}</td>
-                <td>${row.Inspection_By}</td>
-                <td>${row.Category}</td>
+                <td>${row.Job_Number || ''}</td>
+                <td>${row.QC_Name || ''}</td>
+                <td class="red-text">${row.Inspection_Status || ''}</td>
+                <td>${row.Date || ''}</td>
+                <td>${row.Inspection_By || ''}</td>
+                <td>${row.Category || ''}</td>
             `;
             tbody.appendChild(tr);
         });
