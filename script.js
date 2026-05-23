@@ -1,741 +1,390 @@
-let allData = [];
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Register Chart DataLabels plugin
+    Chart.register(ChartDataLabels);
+    Chart.defaults.font.family = "'Segoe UI', sans-serif";
+    Chart.defaults.color = '#8fa0dd'; // Default dark mode color
 
-let pieChart;
-let monthlyChart;
-let categoryChart;
+    let charts = {};
+    let allRawData = [];
+    
+    // Active all filters initially as requested
+    let currentFilters = { 
+        years: ['2024', '2025', '2026'], 
+        months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], 
+        names: [] 
+    };
 
-let currentYear='All';
-let currentMonth='All';
+    // Initialize Empty Charts with correct layout specs
+    initCharts();
 
-/* ==========================
-   LOAD CSV
-========================== */
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('themeToggleBtn');
+    themeBtn.addEventListener('click', function() {
+        document.body.classList.toggle('light-mode');
+        
+        // Toggle icon
+        if(document.body.classList.contains('light-mode')) {
+            this.classList.remove('fa-sun');
+            this.classList.add('fa-moon');
+            Chart.defaults.color = '#333'; // Light mode chart text
+        } else {
+            this.classList.remove('fa-moon');
+            this.classList.add('fa-sun');
+            Chart.defaults.color = '#8fa0dd'; // Dark mode chart text
+        }
+        
+        // Update specific datalabels color based on theme
+        let isLight = document.body.classList.contains('light-mode');
+        Object.values(charts).forEach(c => {
+            if (c.options.plugins.datalabels) {
+                c.options.plugins.datalabels.color = isLight ? '#000000' : '#ffffff';
+            }
+            c.update();
+        });
+    });
 
-Papa.parse('data.csv',{
+    // Load Data Purely from data.csv
+    function loadData() {
+        Papa.parse("data.csv", {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                if (results.data && results.data.length > 0) {
+                    allRawData = parseAndCleanData(results.data);
+                    applyFiltersAndRender();
+                } else {
+                    console.error("CSV File is empty or could not be loaded.");
+                }
+            }
+        });
+    }
 
-download:true,
-header:true,
-skipEmptyLines:true,
+    // ADVANCED DATE PARSER
+    function parseAndCleanData(rawInput) {
+        const monthsMap = { 
+            'jan': 'Jan', 'feb': 'Feb', 'mar': 'Mar', 'apr': 'Apr', 'may': 'May', 'jun': 'Jun',
+            'jul': 'Jul', 'aug': 'Aug', 'sep': 'Sep', 'oct': 'Oct', 'nov': 'Nov', 'dec': 'Dec'
+        };
 
-complete:function(results){
+        return rawInput.map(row => {
+            let originalDate = (row.Date || '').trim();
+            let finalYear = '2024';
+            let finalMonth = 'Jan';
 
-allData = results.data
-.filter(r=>Object.keys(r).length>0)
-.map(row=>({
+            if (originalDate) {
+                let partsAlpha = originalDate.split(/[-/]/);
+                if (partsAlpha.length === 3 && isNaN(partsAlpha[1])) {
+                    let monthStr = partsAlpha[1].toLowerCase().substring(0, 3);
+                    finalMonth = monthsMap[monthStr] || 'Jan';
+                    let yr = partsAlpha[2];
+                    finalYear = yr.length === 2 ? '20' + yr : yr;
+                } 
+                else if (partsAlpha.length === 3) {
+                    if (partsAlpha[0].length === 4) { 
+                        finalYear = partsAlpha[0];
+                        let mIdx = parseInt(partsAlpha[1], 10) - 1;
+                        const mArray = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                        finalMonth = mArray[mIdx] || 'Jan';
+                    }
+                }
+            }
 
-...row,
+            return {
+                Job_Number: row.Job_Number || 'N/A',
+                QC_Name: row.QC_Name || 'Unknown',
+                Inspection_Status: (row.Inspection_Status || 'Pass').trim(),
+                Date: originalDate || '2024-01-01',
+                Year: finalYear,
+                Month: finalMonth,
+                Department: row.Department || 'Inspection & Packing',
+                Inspection_By: row.Inspection_By || 'N/A',
+                Category: row.Category || 'Unknown'
+            };
+        });
+    }
 
-Job_Number:String(
-row.Job_Number||''
-).trim(),
+    // Filter buttons logic
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            let val = this.getAttribute('data-val');
+            let isYear = this.parentElement.classList.contains('year-filters');
+            let targetGroup = isYear ? currentFilters.years : currentFilters.months;
 
-QC_Name:String(
-row.QC_Name||''
-)
-.replace(/-/g,'')
-.replace(/\s+/g,'')
-.trim(),
+            if (this.classList.contains('active')) {
+                targetGroup.push(val);
+            } else {
+                let index = targetGroup.indexOf(val);
+                if (index > -1) targetGroup.splice(index, 1);
+            }
+            applyFiltersAndRender();
+        });
+    });
 
-Inspection_Status:String(
-row.Inspection_Status||''
-).trim(),
+    // Reset All Filters Button
+    document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+        currentFilters = { 
+            years: ['2024', '2025', '2026'], 
+            months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], 
+            names: [] 
+        };
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.add('active'));
+        applyFiltersAndRender();
+    });
 
-Date:String(
-row.Date||''
-).trim(),
+    // Interactive Bar Toggling Function
+    window.toggleNameFilter = function(name) {
+        let index = currentFilters.names.indexOf(name);
+        if (index > -1) currentFilters.names.splice(index, 1);
+        else currentFilters.names.push(name);
+        applyFiltersAndRender();
+    };
 
-Inspection_By:String(
-row.Inspection_By||''
-)
-.replace(/-/g,'')
-.replace(/\s+/g,'')
-.trim(),
+    // Engine Core Renderer
+    function applyFiltersAndRender() {
+        let filteredData = allRawData.filter(row => {
+            let yearMatch = currentFilters.years.length === 0 || currentFilters.years.includes(row.Year);
+            let monthMatch = currentFilters.months.length === 0 || currentFilters.months.includes(row.Month);
+            let nameMatch = currentFilters.names.length === 0 || currentFilters.names.includes(row.QC_Name);
+            return yearMatch && monthMatch && nameMatch;
+        });
 
-Category:String(
-row.Category||''
-).trim(),
+        let timelineFilteredData = allRawData.filter(row => {
+            let yearMatch = currentFilters.years.length === 0 || currentFilters.years.includes(row.Year);
+            let monthMatch = currentFilters.months.length === 0 || currentFilters.months.includes(row.Month);
+            return yearMatch && monthMatch;
+        });
 
-Month:String(
-row.Month||''
-).trim(),
+        updateKPIs(filteredData);
+        updateTable(filteredData); // Hardcoded inside to show only Rejects
+        updatePackingQCTracks(timelineFilteredData);
+        updateCategoriesList(filteredData);
+        updateChartsData(filteredData);
+    }
 
-Year:String(
-row.Year||''
-).trim()
+    // Component Functionality
+    function updateKPIs(data) {
+        let total = data.length;
+        let reject = data.filter(d => d.Inspection_Status === 'Reject').length;
+        let pass = total - reject;
+        
+        let passPct = total > 0 ? ((pass / total) * 100).toFixed(2) : "0.00";
+        let rejectPct = total > 0 ? ((reject / total) * 100).toFixed(2) : "0.00";
 
-}));
+        document.getElementById('kpiTotalDevices').textContent = total;
+        document.getElementById('kpiTotalPass').textContent = pass;
+        document.getElementById('kpiTotalReject').textContent = reject;
+        document.getElementById('kpiPassRate').textContent = passPct + '%';
+        document.getElementById('kpiRejectRate').textContent = rejectPct + '%';
 
-updateDashboard(allData);
+        document.getElementById('sumTotal').textContent = total;
+        document.getElementById('sumPass').textContent = pass;
+        document.getElementById('sumReject').textContent = reject;
+        document.getElementById('sumPassRate').textContent = passPct + '%';
+        document.getElementById('sumRejectRate').textContent = rejectPct + '%';
+    }
 
-}
+    function updateTable(data) {
+        let tbody = document.getElementById('rejectedTableBody');
+        tbody.innerHTML = '';
+        
+        // Strict logic: ONLY display 'Reject' rows in the table
+        let tableRows = data.filter(d => d.Inspection_Status === 'Reject');
 
+        tableRows.forEach(row => {
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row.Job_Number}</td>
+                <td>${row.QC_Name}</td>
+                <td class="red-text">${row.Inspection_Status}</td>
+                <td>${row.Date}</td>
+                <td>${row.Inspection_By}</td>
+                <td>${row.Category}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function updatePackingQCTracks(data) {
+        let container = document.getElementById('packingQcContent');
+        container.innerHTML = '';
+
+        let distinctDepts = [...new Set(data.map(d => d.Department))];
+
+        distinctDepts.forEach(dept => {
+            let deptRecords = data.filter(d => d.Department === dept);
+            if (deptRecords.length === 0) return;
+
+            let blockHtml = `<div class="dept-block"><div class="dept-title">${dept}</div>`;
+            let userMap = {};
+
+            deptRecords.forEach(r => {
+                if (!userMap[r.QC_Name]) userMap[r.QC_Name] = { total: 0, reject: 0 };
+                userMap[r.QC_Name].total++;
+                if (r.Inspection_Status === 'Reject') userMap[r.QC_Name].reject++;
+            });
+
+            let sortedNames = Object.keys(userMap).sort((a,b) => userMap[b].total - userMap[a].total);
+
+            sortedNames.forEach(name => {
+                let stats = userMap[name];
+                let rejRate = stats.total > 0 ? Math.round((stats.reject / stats.total) * 100) : 0;
+                let passRate = 100 - rejRate;
+                let activeClass = currentFilters.names.includes(name) ? 'active-name' : '';
+
+                blockHtml += `
+                    <div class="qc-bar-row ${activeClass}" onclick="toggleNameFilter('${name}')">
+                        <div class="qc-name" title="${name}">${name}</div>
+                        <div class="qc-track">
+                            <div class="qc-pass-fill" style="width: ${passRate}%;"></div>
+                            <div class="qc-reject-fill" style="width: ${rejRate}%;"></div>
+                            <div class="qc-total-text">${stats.total}</div>
+                        </div>
+                        <div class="qc-rate">${rejRate}%</div>
+                    </div>
+                `;
+            });
+
+            blockHtml += `</div>`;
+            container.innerHTML += blockHtml;
+        });
+    }
+
+    function updateCategoriesList(data) {
+        let catCount = {};
+        let totalRejects = data.filter(d => d.Inspection_Status === 'Reject');
+        
+        totalRejects.forEach(d => {
+            catCount[d.Category] = (catCount[d.Category] || 0) + 1;
+        });
+
+        let sortedCats = Object.keys(catCount).map(k => ({ name: k, count: catCount[k] })).sort((a,b) => b.count - a.count);
+        let listContainer = document.getElementById('rejectCategoriesList');
+        listContainer.innerHTML = '';
+
+        let maxCount = sortedCats.length > 0 ? sortedCats[0].count : 1;
+        const barColors = ['#00d2ff', '#ff4b2b', '#8a2be2', '#ffcc00', '#ff007f', '#00ffcc'];
+
+        sortedCats.forEach((item, index) => {
+            let fillPct = (item.count / maxCount) * 100;
+            let chosenColor = barColors[index % barColors.length];
+            listContainer.innerHTML += `
+                <div class="cat-row">
+                    <div class="cat-name"><span>${item.name}</span><span>${item.count}</span></div>
+                    <div class="cat-bar-container">
+                        <div class="cat-bar" style="width: ${fillPct}%; background: ${chosenColor}; box-shadow: 0 0 8px ${chosenColor}"></div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Chart.js Configuration
+    function initCharts() {
+        const dlConfig = {
+            display: true,
+            color: '#ffffff',
+            align: 'top',
+            anchor: 'end',
+            offset: -2,
+            font: { weight: 'bold', size: 9 },
+            formatter: Math.round
+        };
+
+        charts.monthly = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+                datasets: [
+                    { label: 'Total', data: [], backgroundColor: '#0055ff', borderRadius: 2 },
+                    { label: 'Reject', data: [], backgroundColor: '#ff2a2a', borderRadius: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: dlConfig },
+                scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true } }
+            }
+        });
+
+        charts.annual = new Chart(document.getElementById('annualChart').getContext('2d'), {
+            type: 'bar',
+            data: { labels: [], datasets: [
+                { label: 'Total', data: [], backgroundColor: '#00d2ff', borderRadius: 2 },
+                { label: 'Reject', data: [], backgroundColor: '#ff2a2a', borderRadius: 2 }
+            ]},
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: dlConfig },
+                scales: { x: { grid: { display: false }, ticks: { font: { size: 8 } } }, y: { display: false, beginAtZero: true } }
+            }
+        });
+
+        charts.ratio = new Chart(document.getElementById('ratioChart').getContext('2d'), {
+            type: 'doughnut',
+            data: { labels: ['Reject', 'Pass'], datasets: [{ data: [0, 100], backgroundColor: ['#ff2a2a', '#0055ff'], borderWidth: 0 }] },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } }, datalabels: { display: false } }
+            }
+        });
+
+        charts.annualTotal = new Chart(document.getElementById('annualTotalChart').getContext('2d'), {
+            type: 'bar',
+            data: { labels: ['2024', '2025', '2026'], datasets: [{ data: [], backgroundColor: '#8a2be2', borderRadius: 3, barPercentage: 0.4 }] },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: dlConfig },
+                scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true } }
+            }
+        });
+    }
+
+    function updateChartsData(data) {
+        const monthsList = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        
+        let mTotal = new Array(12).fill(0);
+        let mReject = new Array(12).fill(0);
+        data.forEach(d => {
+            let idx = monthsList.indexOf(d.Month);
+            if (idx > -1) { mTotal[idx]++; if (d.Inspection_Status === 'Reject') mReject[idx]++; }
+        });
+        charts.monthly.data.datasets[0].data = mTotal;
+        charts.monthly.data.datasets[1].data = mReject;
+        charts.monthly.update();
+
+        let trackingMap = {};
+        data.forEach(d => {
+            let key = `${d.Year}-${d.Month}`;
+            if (!trackingMap[key]) {
+                trackingMap[key] = { 
+                    label: `${d.Month} ${d.Year.substring(2)}`, 
+                    total: 0, reject: 0, 
+                    order: parseInt(d.Year) * 12 + monthsList.indexOf(d.Month) 
+                };
+            }
+            trackingMap[key].total++;
+            if (d.Inspection_Status === 'Reject') trackingMap[key].reject++;
+        });
+
+        let orderedPeriods = Object.values(trackingMap).sort((a,b) => a.order - b.order);
+        charts.annual.data.labels = orderedPeriods.map(p => p.label);
+        charts.annual.data.datasets[0].data = orderedPeriods.map(p => p.total);
+        charts.annual.data.datasets[1].data = orderedPeriods.map(p => p.reject);
+        charts.annual.update();
+
+        let totalRejects = data.filter(d => d.Inspection_Status === 'Reject').length;
+        let totalPasses = data.length - totalRejects;
+        charts.ratio.data.datasets[0].data = [totalRejects, totalPasses];
+        charts.ratio.update();
+
+        let yLabels = ['2024', '2025', '2026'];
+        charts.annualTotal.data.datasets[0].data = yLabels.map(yr => data.filter(d => d.Year === yr).length);
+        charts.annualTotal.update();
+    }
+
+    loadData();
 });
-
-/* ==========================
-   FILTERS
-========================== */
-
-document.querySelectorAll('.year-btn')
-.forEach(btn=>{
-
-btn.addEventListener('click',()=>{
-
-currentYear=btn.innerText;
-applyFilters();
-
-});
-
-});
-
-document.querySelectorAll('.month-btn')
-.forEach(btn=>{
-
-btn.addEventListener('click',()=>{
-
-currentMonth=btn.innerText;
-applyFilters();
-
-});
-
-});
-
-document.getElementById('qcFilter')
-?.addEventListener('change',applyFilters);
-
-document.getElementById('packingFilter')
-?.addEventListener('change',applyFilters);
-
-document.getElementById('resetBtn')
-?.addEventListener('click',()=>{
-
-currentYear='All';
-currentMonth='All';
-
-if(document.getElementById('qcFilter'))
-document.getElementById('qcFilter').value='All';
-
-if(document.getElementById('packingFilter'))
-document.getElementById('packingFilter').value='All';
-
-updateDashboard(allData);
-
-});
-
-/* ==========================
-   APPLY FILTERS
-========================== */
-
-function applyFilters(){
-
-let filtered=[...allData];
-
-const qc=
-document.getElementById('qcFilter')
-?.value || 'All';
-
-const packing=
-document.getElementById('packingFilter')
-?.value || 'All';
-
-/* YEAR */
-
-if(currentYear!=='All'){
-
-filtered=filtered.filter(x=>
-String(x.Year).trim()
-===currentYear
-);
-
-}
-
-/* MONTH */
-
-if(currentMonth!=='All'){
-
-filtered=filtered.filter(x=>
-String(x.Month).trim()
-===currentMonth
-);
-
-}
-
-/* QC */
-
-if(qc!=='All'){
-
-filtered=filtered.filter(x=>
-x.QC_Name===qc
-);
-
-}
-
-/* PACKING */
-
-if(packing!=='All'){
-
-filtered=filtered.filter(x=>
-x.Inspection_By===packing
-);
-
-}
-
-updateDashboard(filtered);
-
-}
-
-/* ==========================
-   UPDATE DASHBOARD
-========================== */
-
-function updateDashboard(data){
-
-const total=data.length;
-
-const pass=data.filter(x=>
-x.Inspection_Status==='Pass'
-).length;
-
-const reject=data.filter(x=>
-x.Inspection_Status==='Reject'
-).length;
-
-const passRate=
-total?
-((pass/total)*100)
-.toFixed(1):0;
-
-const rejectRate=
-total?
-((reject/total)*100)
-.toFixed(1):0;
-
-/* KPI */
-
-document.getElementById(
-'totalDevices'
-).innerText=total;
-
-document.getElementById(
-'totalPass'
-).innerText=pass;
-
-document.getElementById(
-'totalReject'
-).innerText=reject;
-
-document.getElementById(
-'passRate'
-).innerText=passRate+'%';
-
-document.getElementById(
-'rejectRate'
-).innerText=rejectRate+'%';
-
-/* SUMMARY */
-
-if(document.getElementById('sTotal'))
-document.getElementById(
-'sTotal'
-).innerText=total;
-
-if(document.getElementById('sPass'))
-document.getElementById(
-'sPass'
-).innerText=pass;
-
-if(document.getElementById('sReject'))
-document.getElementById(
-'sReject'
-).innerText=reject;
-
-if(document.getElementById('sPassRate'))
-document.getElementById(
-'sPassRate'
-).innerText=passRate+'%';
-
-if(document.getElementById('sRejectRate'))
-document.getElementById(
-'sRejectRate'
-).innerText=rejectRate+'%';
-
-/* ==========================
-   REJECT TABLE
-========================== */
-
-const rejectedOnly=
-data.filter(x=>
-x.Inspection_Status==='Reject'
-);
-
-let rows='';
-
-rejectedOnly.forEach(r=>{
-
-rows+=`
-
-<tr>
-<td>${r.Job_Number||''}</td>
-<td>${r.QC_Name||''}</td>
-<td class="reject">
-${r.Inspection_Status||''}
-</td>
-<td>${r.Date||''}</td>
-<td>${r.Inspection_By||''}</td>
-<td>${r.Category||''}</td>
-</tr>
-
-`;
-
-});
-
-document.getElementById(
-'tableBody'
-).innerHTML=rows;
-
-/* ==========================
-   DONUT
-========================== */
-
-if(pieChart)
-pieChart.destroy();
-
-const donutCenter={
-
-id:'donutCenter',
-
-afterDraw(chart){
-
-const {ctx}=chart;
-const meta=
-chart.getDatasetMeta(0);
-
-if(!meta.data.length)
-return;
-
-const x=meta.data[0].x;
-const y=meta.data[0].y;
-
-ctx.save();
-
-ctx.textAlign='center';
-ctx.textBaseline='middle';
-
-/* PASS % */
-
-ctx.font=
-'bold 22px Segoe UI';
-
-ctx.fillStyle='#ffffff';
-
-ctx.fillText(
-passRate+'%',
-x,
-y-16
-);
-
-/* PASS */
-
-ctx.font=
-'bold 13px Segoe UI';
-
-ctx.fillStyle='#17d2ff';
-
-ctx.fillText(
-'PASS',
-x,
-y+8
-);
-
-/* REJECT */
-
-ctx.font=
-'bold 11px Segoe UI';
-
-ctx.fillStyle='#ff2b67';
-
-ctx.fillText(
-rejectRate+'% Reject',
-x,
-y+28
-);
-
-ctx.restore();
-
-}
-
-};
-
-pieChart=new Chart(
-
-document.getElementById(
-'pieChart'
-),
-
-{
-
-type:'doughnut',
-
-data:{
-
-labels:[
-'Pass',
-'Reject'
-],
-
-datasets:[{
-
-data:[
-pass,
-reject
-],
-
-backgroundColor:[
-'#16d1ff',
-'#ff005d'
-],
-
-borderWidth:0,
-radius:'60%'
-
-}]
-
-},
-
-options:{
-
-responsive:true,
-maintainAspectRatio:false,
-cutout:'72%',
-
-plugins:{
-legend:{display:false},
-tooltip:{enabled:true}
-}
-
-},
-
-plugins:[donutCenter]
-
-});
-
-/* ==========================
-   MONTHLY
-========================== */
-
-const months={};
-
-data.forEach(r=>{
-
-const m=
-r.Month || 'Unknown';
-
-if(!months[m]){
-
-months[m]={
-pass:0,
-reject:0
-};
-
-}
-
-if(
-r.Inspection_Status==='Pass'
-){
-
-months[m].pass++;
-
-}else if(
-r.Inspection_Status==='Reject'
-){
-
-months[m].reject++;
-
-}
-
-});
-
-if(monthlyChart)
-monthlyChart.destroy();
-
-monthlyChart=new Chart(
-
-document.getElementById(
-'monthlyChart'
-),
-
-{
-
-type:'bar',
-
-data:{
-
-labels:
-Object.keys(months),
-
-datasets:[
-
-{
-
-label:'Pass',
-
-data:
-Object.values(months)
-.map(x=>x.pass),
-
-backgroundColor:
-'#16d1ff',
-
-borderRadius:4
-
-},
-
-{
-
-label:'Reject',
-
-data:
-Object.values(months)
-.map(x=>x.reject),
-
-backgroundColor:
-'#ff005d',
-
-borderRadius:4
-
-}
-
-]
-
-},
-
-options:{
-
-responsive:true,
-maintainAspectRatio:false,
-
-plugins:{
-
-legend:{
-display:true,
-labels:{
-color:'#fff',
-font:{
-size:11,
-weight:'bold'
-}
-}
-},
-
-datalabels:{
-
-color:'#fff',
-
-anchor:'end',
-
-align:'top',
-
-font:{
-size:10,
-weight:'bold'
-}
-
-}
-
-},
-
-scales:{
-
-x:{
-ticks:{
-color:'#fff'
-},
-grid:{
-display:false
-}
-},
-
-y:{
-ticks:{
-display:false
-},
-grid:{
-display:false
-}
-}
-
-}
-
-},
-
-plugins:[
-ChartDataLabels
-]
-
-});
-
-/* ==========================
-   CATEGORY
-========================== */
-
-const categories={};
-
-rejectedOnly.forEach(r=>{
-
-const c=
-r.Category || 'Unknown';
-
-if(!categories[c])
-categories[c]=0;
-
-categories[c]++;
-
-});
-
-if(categoryChart)
-categoryChart.destroy();
-
-categoryChart=new Chart(
-
-document.getElementById(
-'categoryChart'
-),
-
-{
-
-type:'bar',
-
-data:{
-
-labels:
-Object.keys(categories),
-
-datasets:[{
-
-data:
-Object.values(categories),
-
-backgroundColor:
-'#ff005d',
-
-borderRadius:5
-
-}]
-
-},
-
-options:{
-
-indexAxis:'y',
-
-responsive:true,
-maintainAspectRatio:false,
-
-plugins:{
-
-legend:{
-display:false
-},
-
-datalabels:{
-
-color:'#fff',
-
-anchor:'end',
-
-align:'right',
-
-font:{
-size:11,
-weight:'bold'
-}
-
-}
-
-},
-
-scales:{
-
-x:{
-ticks:{
-display:false
-},
-grid:{
-display:false
-}
-},
-
-y:{
-ticks:{
-color:'#fff',
-font:{
-size:11
-}
-},
-grid:{
-display:false
-}
-}
-
-}
-
-},
-
-plugins:[
-ChartDataLabels
-]
-
-});
-
-/* ==========================
-   TOP CATEGORIES
-========================== */
-
-let top='';
-
-Object.entries(categories)
-.sort((a,b)=>b[1]-a[1])
-.slice(0,5)
-.forEach(item=>{
-
-top+=`
-
-<div class="category-row">
-
-<div class="category-head">
-
-<span>${item[0]}</span>
-
-<span class="red-text">
-${item[1]}
-</span>
-
-</div>
-
-<div class="bar-bg">
-
-<div class="bar-fill"
-style="width:${item[1]*8}%">
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-if(
-document.getElementById(
-'topCategories'
-)
-){
-
-document.getElementById(
-'topCategories'
-).innerHTML=top;
-
-}
-
-}
