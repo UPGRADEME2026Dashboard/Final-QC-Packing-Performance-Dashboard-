@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة متابعة أداء التعبئة</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-left"></div>
+            <div class="header-center">
+                <img src="upgrade-logo.png" alt="Upgrade" class="brand-logo" onerror="this.style.display='none'">
+                <h2 class="sub-glow-text">Final QC & Packing Performance Dashboard</h2>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-sun theme-toggle-btn" id="themeToggleBtn" title="Toggle Light/Dark Mode"></i>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <button class="reset-btn" id="resetFiltersBtn">
+                    <i class="fas fa-sync-alt"></i> Reset
+                </button>
+
+                <div class="filter-group year-filters" id="yearFilters">
+                    <button class="filter-btn active" data-val="2024">2024</button>
+                    <button class="filter-btn active" data-val="2025">2025</button>
+                    <button class="filter-btn active" data-val="2026">2026</button>
+                </div>
+
+                <div class="filter-group month-filters" id="monthFilters">
+                    <button class="filter-btn active" data-val="Jan">Jan</button>
+                    <button class="filter-btn active" data-val="Feb">Feb</button>
+                    <button class="filter-btn active" data-val="Mar">Mar</button>
+                    <button class="filter-btn active" data-val="Apr">Apr</button>
+                    <button class="filter-btn active" data-val="May">May</button>
+                    <button class="filter-btn active" data-val="Jun">Jun</button>
+                    <button class="filter-btn active" data-val="Jul">Jul</button>
+                    <button class="filter-btn active" data-val="Aug">Aug</button>
+                    <button class="filter-btn active" data-val="Sep">Sep</button>
+                    <button class="filter-btn active" data-val="Oct">Oct</button>
+                    <button class="filter-btn active" data-val="Nov">Nov</button>
+                    <button class="filter-btn active" data-val="Dec">Dec</button>
+                </div>
+            </aside>
+
+            <div class="dashboard-grid custom-scroll">
+                <div class="kpi-row">
+                    <div class="kpi-card neon-blue">
+                        <div class="kpi-title">TOTAL PASS</div>
+                        <div class="kpi-value" id="kpiTotalPass">0</div>
+                        <i class="fas fa-check-circle kpi-icon"></i>
+                        <div class="kpi-indicator-bar blue-bar"></div>
+                    </div>
+                    <div class="kpi-card neon-blue">
+                        <div class="kpi-title">PASS RATE</div>
+                        <div class="kpi-value" id="kpiPassRate">0%</div>
+                        <i class="fas fa-circle-notch kpi-icon"></i>
+                        <div class="kpi-indicator-bar blue-bar"></div>
+                    </div>
+                    <div class="kpi-card center-kpi neon-purple">
+                        <div class="kpi-title">TOTAL DEVICES</div>
+                        <div class="kpi-value highlight" id="kpiTotalDevices">0</div>
+                        <i class="fas fa-mobile-alt kpi-icon"></i>
+                        <div class="kpi-indicator-bar purple-bar"></div>
+                    </div>
+                    <div class="kpi-card neon-red">
+                        <div class="kpi-title">TOTAL REJECT</div>
+                        <div class="kpi-value" id="kpiTotalReject">0</div>
+                        <i class="fas fa-times-circle kpi-icon"></i>
+                        <div class="kpi-indicator-bar red-bar"></div>
+                    </div>
+                    <div class="kpi-card neon-red">
+                        <div class="kpi-title">REJECT RATE</div>
+                        <div class="kpi-value" id="kpiRejectRate">0%</div>
+                        <i class="fas fa-circle-notch kpi-icon"></i>
+                        <div class="kpi-indicator-bar red-bar"></div>
+                    </div>
+                </div>
+
+                <div class="main-vertical-grid">
+                    <div class="grid-column qc-performance-col">
+                        <div class="panel packing-qc-panel custom-scroll">
+                            <h3 class="panel-title glow-title">Total Devices vs Reject Rate (Packing & QC)</h3>
+                            <div id="packingQcContent" class="packing-qc-wrapper"></div>
+                        </div>
+
+                        <div class="lower-insights-grid">
+                            <div class="panel small-chart ratio-panel">
+                                <h3 class="panel-title glow-title">Pass Vs Reject Ratio</h3>
+                                <div class="canvas-container">
+                                    <canvas id="ratioChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="panel summary-panel custom-scroll">
+                                <h3 class="panel-title glow-title">Summary (All Time)</h3>
+                                <ul class="summary-list">
+                                    <li><span><i class="fas fa-mobile-alt"></i> Total Devices</span> <span id="sumTotal">0</span></li>
+                                    <li><span><i class="fas fa-check-square"></i> Total Pass</span> <span id="sumPass">0</span></li>
+                                    <li><span><i class="fas fa-times-circle red-text"></i> Total Reject</span> <span id="sumReject" class="red-text">0</span></li>
+                                    <li><span><i class="fas fa-percentage"></i> Pass Rate</span> <span id="sumPassRate">0%</span></li>
+                                    <li><span><i class="fas fa-chart-pie" class="red-text"></i> Reject Rate</span> <span id="sumRejectRate" class="red-text">0%</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="panel small-chart annual-total-panel">
+                                <h3 class="panel-title glow-title">Annual Total (Devices)</h3>
+                                <div class="canvas-container">
+                                    <canvas id="annualTotalChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-column large-col">
+                        <div class="panel chart-panel">
+                            <h3 class="panel-title chart-label glow-title">Monthly Packing Department Quality Trend</h3>
+                            <div class="canvas-container">
+                                <canvas id="monthlyChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="panel chart-panel">
+                            <h3 class="panel-title chart-label glow-title">Annual Performance Overview</h3>
+                            <div class="canvas-container">
+                                <canvas id="annualChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="rejects-bottom-grid">
+                            <div class="panel reject-categories-panel">
+                                <h3 class="panel-title glow-title">Reject Categories</h3>
+                                <div class="categories-list custom-scroll" id="rejectCategoriesList"></div>
+                            </div>
+
+                            <div class="panel data-table-panel">
+                                <h3 class="panel-title glow-title red-text">Rejected Devices Only</h3>
+                                <div class="table-container custom-scroll">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Job Number</th>
+                                                <th>QC Name</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Inspection By</th>
+                                                <th>Category</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="rejectedTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
