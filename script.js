@@ -5,7 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let charts = {};
     let allRawData = [];
+/* =========================
+   LIVE VISITORS COUNTER
+========================= */
 
+let localVisitorChannel = null;
+let visitorTabId = 'visitor_' + Math.random().toString(36).substring(2, 12);
     const defaultYears = ['2024', '2025', '2026'];
     const defaultMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const peopleSections = [
@@ -20,9 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     initCharts();
-    initThemeToggle();
-    initFilterButtons();
-    loadData();
+initThemeToggle();
+initFilterButtons();
+initVisitorsCounter();
+loadData();
 
     function initThemeToggle() {
         const themeBtn = document.getElementById('themeToggleBtn');
@@ -425,47 +431,158 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         charts.annual = new Chart(document.getElementById('annualChart').getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: [],
-                datasets: [
-                    { label: 'Total', data: [], backgroundColor: '#00d2ff', borderRadius: 2 },
-                    { label: 'Reject', data: [], backgroundColor: '#ff2a2a', borderRadius: 2 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false }, datalabels: dlConfig },
-                scales: { x: { grid: { display: false }, ticks: { font: { size: 8 } } }, y: { display: false, beginAtZero: true, grace: '14%' } }
-            }
-        });
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [
+            { label: 'Total', data: [], backgroundColor: [], borderRadius: 2 },
+            { label: 'Reject', data: [], backgroundColor: '#ff2a2a', borderRadius: 2 }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    color: function() {
+                        return document.body.classList.contains('light-mode') ? '#111111' : '#ffffff';
+                    },
+                    boxWidth: 12,
+                    padding: 10,
+                    font: {
+                        size: 11,
+                        weight: 'bold'
+                    },
+                    generateLabels: function(chart) {
+                        const yearColors = {
+                            '2024': '#00d2ff',
+                            '2025': '#8a2be2',
+                            '2026': '#0055ff'
+                        };
 
-        charts.ratio = new Chart(document.getElementById('ratioChart').getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Reject', 'Pass'],
-                datasets: [{ data: [0, 100], backgroundColor: ['#ff2a2a', '#0055ff'], borderWidth: 0 }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '72%',
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } },
-                    datalabels: {
-                        display: context => Number(context.dataset.data[context.dataIndex]) > 0,
-                        color: '#ffffff',
-                        font: { weight: 'bold', size: 10 },
-                        formatter: (value, context) => {
-                            const total = context.dataset.data.reduce((sum, item) => sum + Number(item || 0), 0);
-                            if (!total) return '';
-                            return `${Math.round((value / total) * 100)}%`;
-                        }
+                        return defaultYears.map(year => ({
+                            text: year,
+                            fillStyle: yearColors[year],
+                            strokeStyle: yearColors[year],
+                            fontColor: document.body.classList.contains('light-mode') ? '#111111' : '#ffffff',
+                            lineWidth: 1,
+                            hidden: false,
+                            datasetIndex: 0
+                        }));
                     }
                 }
+            },
+           datalabels: {
+    ...dlConfig,
+    color: function() {
+        return document.body.classList.contains('light-mode') ? '#111111' : '#ffffff';
+    },
+    textStrokeColor: function() {
+        return document.body.classList.contains('light-mode') ? '#ffffff' : '#000000';
+    },
+    textStrokeWidth: 1,
+    textShadowBlur: 0,
+    font: {
+        weight: 'bold',
+        size: 10
+    }
+}
+        },
+        scales: {
+            x: {
+                grid: { display: false },
+                ticks: {
+                    font: { size: 8 },
+                    color: function() {
+                        return document.body.classList.contains('light-mode') ? '#222222' : '#ffffff';
+                    }
+                }
+            },
+            y: {
+                display: false,
+                beginAtZero: true,
+                grace: '14%'
             }
-        });
+        }
+    }
+});
+
+       charts.ratio = new Chart(document.getElementById('ratioChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Reject', 'Pass'],
+        datasets: [{
+            data: [0, 100],
+            backgroundColor: [
+                'rgba(255, 42, 42, 0.92)',
+                'rgba(0, 210, 255, 0.92)'
+            ],
+            borderColor: [
+                '#ff4b4b',
+                '#00d2ff'
+            ],
+            borderWidth: 2,
+            hoverOffset: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '72%',
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    boxWidth: 10,
+                    padding: 10,
+                    color: function() {
+                        return document.body.classList.contains('light-mode') ? '#111111' : '#ffffff';
+                    },
+                    font: {
+                        size: 11,
+                        weight: 'bold'
+                    }
+                }
+            },
+            datalabels: {
+    display: context => Number(context.dataset.data[context.dataIndex]) > 0,
+
+    color: function() {
+        return document.body.classList.contains('light-mode')
+            ? '#000000'
+            : '#ffffff';
+    },
+
+    textStrokeWidth: 0,
+
+    textShadowBlur: 0,
+
+    anchor: 'center',
+    align: 'center',
+
+    font: {
+        weight: 'bold',
+        size: 13
+    },
+
+    formatter: (value, context) => {
+
+        const total = context.dataset.data.reduce(
+            (sum, item) => sum + Number(item || 0),
+            0
+        );
+
+        if (!total) return '';
+
+        return `${Math.round((value / total) * 100)}%`;
+    }
+}
+        }
+    }
+});
 
         charts.annualTotal = new Chart(document.getElementById('annualTotalChart').getContext('2d'), {
             type: 'bar',
@@ -525,10 +642,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const orderedPeriods = Object.values(trackingMap).sort((a, b) => a.order - b.order);
-        charts.annual.data.labels = orderedPeriods.map(p => p.label);
-        charts.annual.data.datasets[0].data = orderedPeriods.map(p => p.total);
-        charts.annual.data.datasets[1].data = orderedPeriods.map(p => p.reject);
-        charts.annual.update();
+        const annualYearColors = {
+    '2024': '#00d2ff',
+    '2025': '#8a2be2',
+    '2026': '#0055ff'
+};
+
+charts.annual.data.labels = orderedPeriods.map(p => p.label);
+charts.annual.data.datasets[0].data = orderedPeriods.map(p => p.total);
+charts.annual.data.datasets[0].backgroundColor = orderedPeriods.map(p => {
+    const year = p.label.includes('24') ? '2024' : p.label.includes('25') ? '2025' : '2026';
+    return annualYearColors[year] || '#00d2ff';
+});
+charts.annual.data.datasets[1].data = orderedPeriods.map(p => p.reject);
+charts.annual.update();
 
         const totalRejects = data.filter(d => d.Inspection_Status === 'Reject').length;
         const totalPasses = data.length - totalRejects;
@@ -538,7 +665,63 @@ document.addEventListener('DOMContentLoaded', function() {
         charts.annualTotal.data.datasets[0].data = defaultYears.map(yr => data.filter(d => d.Year === yr).length);
         charts.annualTotal.update();
     }
+/* =========================
+   VISITORS SYSTEM
+========================= */
 
+function initVisitorsCounter() {
+
+    const counterEl = document.getElementById('visitorCount');
+
+    if (!counterEl) return;
+
+    if ('BroadcastChannel' in window) {
+
+        localVisitorChannel = new BroadcastChannel('dashboard_visitors_channel');
+
+        const activeTabs = new Set();
+
+        activeTabs.add(visitorTabId);
+
+        localVisitorChannel.postMessage({
+            type: 'VISITOR_JOIN',
+            id: visitorTabId
+        });
+
+        localVisitorChannel.onmessage = (event) => {
+
+            const data = event.data;
+
+            if (!data || !data.type) return;
+
+            if (data.type === 'VISITOR_JOIN') {
+                activeTabs.add(data.id);
+            }
+
+            if (data.type === 'VISITOR_LEAVE') {
+                activeTabs.delete(data.id);
+            }
+
+            counterEl.textContent = activeTabs.size;
+        };
+
+        counterEl.textContent = 1;
+
+        window.addEventListener('beforeunload', () => {
+
+            localVisitorChannel.postMessage({
+                type: 'VISITOR_LEAVE',
+                id: visitorTabId
+            });
+
+            localVisitorChannel.close();
+        });
+
+    } else {
+
+        counterEl.textContent = 1;
+    }
+}
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, char => ({
             '&': '&amp;',
