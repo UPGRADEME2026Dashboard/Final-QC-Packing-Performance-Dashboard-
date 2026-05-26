@@ -204,7 +204,8 @@ const visitorRef = ref(db, 'activeVisitors/' + visitorId);
 
 set(visitorRef, {
     active: true,
-    timestamp: Date.now()
+    lastSeen: Date.now(),
+    page: location.pathname
 });
 
 onDisconnect(visitorRef).remove();
@@ -215,11 +216,25 @@ onValue(activeVisitorsRef, (snapshot) => {
 
     const data = snapshot.val();
 
-    const count =
-        data
-            ? Object.keys(data).length
-            : 0;
+   const now = Date.now();
 
+const count = data
+    ? Object.values(data).filter(v =>
+        v &&
+        v.lastSeen &&
+        (now - v.lastSeen < 15000)
+      ).length
+    : 0;
+onDisconnect(visitorRef).remove();
+setInterval(() => {
+
+    set(visitorRef, {
+        active: true,
+        lastSeen: Date.now(),
+        page: location.pathname
+    });
+
+}, 5000);
     const counterEl =
         document.getElementById('visitorCount');
 
