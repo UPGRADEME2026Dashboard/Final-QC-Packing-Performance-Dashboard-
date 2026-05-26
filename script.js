@@ -5,12 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let charts = {};
     let allRawData = [];
-/* =========================
-   LIVE VISITORS COUNTER
-========================= */
 
-let localVisitorChannel = null;
-let visitorTabId = 'visitor_' + Math.random().toString(36).substring(2, 12);
     const defaultYears = ['2024', '2025', '2026'];
     const defaultMonths = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const peopleSections = [
@@ -27,7 +22,7 @@ let visitorTabId = 'visitor_' + Math.random().toString(36).substring(2, 12);
     initCharts();
 initThemeToggle();
 initFilterButtons();
-initVisitorsCounter();
+
 loadData();
 
     function initThemeToggle() {
@@ -665,63 +660,7 @@ charts.annual.update();
         charts.annualTotal.data.datasets[0].data = defaultYears.map(yr => data.filter(d => d.Year === yr).length);
         charts.annualTotal.update();
     }
-/* =========================
-   VISITORS SYSTEM
-========================= */
 
-function initVisitorsCounter() {
-
-    const counterEl = document.getElementById('visitorCount');
-
-    if (!counterEl) return;
-
-    if ('BroadcastChannel' in window) {
-
-        localVisitorChannel = new BroadcastChannel('dashboard_visitors_channel');
-
-        const activeTabs = new Set();
-
-        activeTabs.add(visitorTabId);
-
-        localVisitorChannel.postMessage({
-            type: 'VISITOR_JOIN',
-            id: visitorTabId
-        });
-
-        localVisitorChannel.onmessage = (event) => {
-
-            const data = event.data;
-
-            if (!data || !data.type) return;
-
-            if (data.type === 'VISITOR_JOIN') {
-                activeTabs.add(data.id);
-            }
-
-            if (data.type === 'VISITOR_LEAVE') {
-                activeTabs.delete(data.id);
-            }
-
-            counterEl.textContent = activeTabs.size;
-        };
-
-        counterEl.textContent = 1;
-
-        window.addEventListener('beforeunload', () => {
-
-            localVisitorChannel.postMessage({
-                type: 'VISITOR_LEAVE',
-                id: visitorTabId
-            });
-
-            localVisitorChannel.close();
-        });
-
-    } else {
-
-        counterEl.textContent = 1;
-    }
-}
     function escapeHtml(value) {
         return String(value || '').replace(/[&<>"']/g, char => ({
             '&': '&amp;',
