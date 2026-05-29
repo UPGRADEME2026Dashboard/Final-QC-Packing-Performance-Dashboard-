@@ -120,7 +120,12 @@ body.light-mode .reset-btn { background: #f0f0f0; color: #333; border-color: #aa
 body.light-mode .filter-btn { background: #fafafa; border-color: #ddd; color: #555; }
 .filter-btn:hover { border-color: var(--border-blue); color: var(--text-main); }
 .filter-btn.active { background: linear-gradient(135deg, #0055ff, #00d2ff); color: #fff; border-color: #fff; box-shadow: var(--glow-blue); }
-
+body.light-mode .filter-btn.active {
+    background: linear-gradient(135deg, #4f46e5, #06b6d4);
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+}
 .dashboard-grid { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-right: 4px; }
 .panel { background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; backdrop-filter: blur(10px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); min-height: 0; }
 body.light-mode .panel { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
