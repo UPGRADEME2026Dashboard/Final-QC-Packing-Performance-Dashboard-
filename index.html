@@ -212,41 +212,36 @@ set(visitorRef, {
     lastSeen: Date.now(),
     page: location.pathname
 });
-
 onDisconnect(visitorRef).remove();
 
 const activeVisitorsRef = ref(db, 'activeVisitors');
 
 onValue(activeVisitorsRef, (snapshot) => {
-
     const data = snapshot.val();
+    const now = Date.now();
 
-   const now = Date.now();
+    const count = data
+        ? Object.values(data).filter(v =>
+            v &&
+            v.lastSeen &&
+            (now - v.lastSeen < 10000)
+        ).length
+        : 0;
 
-const count = data
-    ? Object.values(data).filter(v =>
-        v &&
-        v.lastSeen &&
-        (now - v.lastSeen < 15000)
-      ).length
-    : 0;
-onDisconnect(visitorRef).remove();
-setInterval(() => {
-
-    set(visitorRef, {
-        active: true,
-        lastSeen: Date.now(),
-        page: location.pathname
-    });
-
-}, 5000);
-    const counterEl =
-        document.getElementById('visitorCount');
+    const counterEl = document.getElementById('visitorCount');
 
     if (counterEl) {
         counterEl.textContent = count;
     }
 });
+
+setInterval(() => {
+    set(visitorRef, {
+        active: true,
+        lastSeen: Date.now(),
+        page: location.pathname
+    });
+}, 5000);
 
 </script>
 
