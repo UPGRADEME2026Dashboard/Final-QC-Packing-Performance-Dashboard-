@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentFilters = {
         years: [...defaultYears],
         months: [...defaultMonths],
-        people: []
+        people: [],
+        products: []
     };
 
     initCharts();
@@ -69,7 +70,6 @@ loadData();
                     });
                 }
 
-                currentFilters.people = [];
                 applyFiltersAndRender();
             });
         });
@@ -78,8 +78,9 @@ loadData();
             currentFilters = {
                 years: [...defaultYears],
                 months: [...defaultMonths],
-            people: []
-        };
+                people: [],
+                products: []
+            };
         document.querySelectorAll('.filter-btn').forEach(button => button.classList.add('active'));
         applyFiltersAndRender();
         });
@@ -129,7 +130,8 @@ loadData();
                 Year: finalYear || '2024',
                 Month: finalMonth || 'Jan',
                 Inspection_By: cleanValue(row.Inspection_By, 'N/A'),
-                Category: cleanValue(row.Category, 'Unknown')
+                Category: cleanValue(row.Category, 'Unknown'),
+                Final_Product: normalizeFinalProduct(row.Final_Product)
             };
         });
     }
@@ -170,6 +172,12 @@ loadData();
         return clean === 'reject' || clean === 'rejected' || clean === 'fail' ? 'Reject' : 'Pass';
     }
 
+    function normalizeFinalProduct(value) {
+        const clean = String(value || '').trim();
+        const knownProducts = ['Diamond', 'Platinum', 'Gold', 'RF-WH'];
+        return knownProducts.find(product => product.toLowerCase() === clean.toLowerCase()) || 'Unknown';
+    }
+
     function cleanValue(value, fallback) {
         const clean = String(value || '').trim();
         return clean || fallback;
@@ -204,14 +212,21 @@ loadData();
         applyFiltersAndRender();
     };
 
+    window.toggleProductFilter = function(product) {
+        currentFilters.products = currentFilters.products.includes(product) ? [] : [product];
+        applyFiltersAndRender();
+    };
+
     function applyFiltersAndRender() {
-        const baseFilteredData = getVisibleBaseData();
-        const filteredData = baseFilteredData.filter(matchesPeopleFilters);
+        const dateFilteredData = getVisibleBaseData();
+        const peopleFilteredData = dateFilteredData.filter(matchesPeopleFilters);
+        const filteredData = peopleFilteredData.filter(matchesProductFilters);
 
         updateKPIs(filteredData);
         updateTable(filteredData);
         updatePackingQCTracks(filteredData);
         updateCategoriesList(filteredData);
+        updateFinalProductList(peopleFilteredData);
         updateChartsData(filteredData);
     }
 
@@ -231,6 +246,10 @@ loadData();
             const section = peopleSections.find(item => item.key === sectionKey);
             return section && row[section.field] === name;
         });
+    }
+
+    function matchesProductFilters(row) {
+        return currentFilters.products.length === 0 || currentFilters.products.includes(row.Final_Product);
     }
 
     function updateKPIs(data) {
@@ -397,6 +416,39 @@ loadData();
         });
     }
 
+    function updateFinalProductList(data) {
+        const productColors = {
+            Diamond: '#FF0066',
+            Platinum: '#7030A0',
+            Gold: '#FFC000',
+            'RF-WH': '#00D2FF'
+        };
+        const productOrder = ['Diamond', 'Platinum', 'Gold', 'RF-WH'];
+        const counts = productOrder.reduce((acc, product) => {
+            acc[product] = 0;
+            return acc;
+        }, {});
+
+        data.forEach(row => {
+            if (counts[row.Final_Product] !== undefined) counts[row.Final_Product]++;
+        });
+
+        const listContainer = document.getElementById('finalProductList');
+        if (!listContainer) return;
+
+        listContainer.innerHTML = productOrder.map(product => {
+            const color = productColors[product];
+            const isActive = currentFilters.products.includes(product);
+            return `
+                <button class="product-row ${isActive ? 'active-product' : ''}" type="button" style="--product-color: ${color}" onclick="toggleProductFilter('${product}')">
+                    <span class="product-dot"></span>
+                    <span class="product-name">${escapeHtml(product)}</span>
+                    <span class="product-count">${counts[product]}</span>
+                </button>
+            `;
+        }).join('');
+    }
+
     function initCharts() {
         const dlConfig = {
             display: true,
@@ -405,6 +457,26 @@ loadData();
             anchor: 'end',
             offset: -2,
             font: { weight: 'bold', size: 9 },
+            clip: false,
+            clamp: true,
+            formatter: Math.round
+        };
+
+        const qualityLabelConfig = {
+            display: context => Number(context.dataset.data[context.dataIndex]) > 0,
+            color: function() {
+                return document.body.classList.contains('light-mode') ? '#111111' : '#ffffff';
+            },
+            textStrokeColor: function() {
+                return document.body.classList.contains('light-mode') ? '#ffffff' : '#000000';
+            },
+            textStrokeWidth: 1,
+            anchor: 'end',
+            align: 'top',
+            offset: -2,
+            clip: false,
+            clamp: true,
+            font: { weight: 'bold', size: 10 },
             formatter: Math.round
         };
 
@@ -413,15 +485,16 @@ loadData();
             data: {
                 labels: defaultMonths,
                 datasets: [
-                    { label: 'Total', data: [], backgroundColor: '#0055ff', borderRadius: 2 },
-                    { label: 'Reject', data: [], backgroundColor: '#ff2a2a', borderRadius: 2 }
+                    { label: 'Total Devices', data: [], backgroundColor: '#009cff', borderRadius: 2 },
+                    { label: 'Reject', data: [], backgroundColor: '#ff003d', borderRadius: 2 }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false }, datalabels: dlConfig },
-                scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true, grace: '14%' } }
+                layout: { padding: { top: 24, right: 12, bottom: 8, left: 12 } },
+                plugins: { legend: { display: false }, datalabels: qualityLabelConfig },
+                scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true, grace: '26%' } }
             }
         });
 
@@ -430,8 +503,8 @@ loadData();
     data: {
         labels: [],
         datasets: [
-            { label: 'Total', data: [], backgroundColor: [], borderRadius: 2 },
-            { label: 'Reject', data: [], backgroundColor: '#ff2a2a', borderRadius: 2 }
+            { label: 'Total Devices', data: [], backgroundColor: [], borderRadius: 2 },
+            { label: 'Reject', data: [], backgroundColor: '#ff003d', borderRadius: 2 }
         ]
     },
     options: {
@@ -452,40 +525,21 @@ loadData();
                         weight: 'bold'
                     },
                     generateLabels: function(chart) {
-                        const yearColors = {
-                            '2024': '#00d2ff',
-                            '2025': '#8a2be2',
-                            '2026': '#0055ff'
-                        };
-
-                        return defaultYears.map(year => ({
-                            text: year,
-                            fillStyle: yearColors[year],
-                            strokeStyle: yearColors[year],
+                        return chart.data.datasets.map((dataset, index) => ({
+                            text: dataset.label,
+                            fillStyle: Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[0] : dataset.backgroundColor,
+                            strokeStyle: Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[0] : dataset.backgroundColor,
                             fontColor: document.body.classList.contains('light-mode') ? '#111111' : '#ffffff',
                             lineWidth: 1,
-                            hidden: false,
-                            datasetIndex: 0
+                            hidden: !chart.isDatasetVisible(index),
+                            datasetIndex: index
                         }));
                     }
                 }
             },
-           datalabels: {
-    ...dlConfig,
-    color: function() {
-        return document.body.classList.contains('light-mode') ? '#111111' : '#ffffff';
-    },
-    textStrokeColor: function() {
-        return document.body.classList.contains('light-mode') ? '#ffffff' : '#000000';
-    },
-    textStrokeWidth: 1,
-    textShadowBlur: 0,
-    font: {
-        weight: 'bold',
-        size: 10
-    }
-}
+           datalabels: qualityLabelConfig
         },
+        layout: { padding: { top: 26, right: 14, bottom: 8, left: 14 } },
         scales: {
             x: {
                 grid: { display: false },
@@ -499,7 +553,7 @@ loadData();
             y: {
                 display: false,
                 beginAtZero: true,
-                grace: '14%'
+                grace: '28%'
             }
         }
     }
@@ -617,8 +671,8 @@ loadData();
                 if (d.Inspection_Status === 'Reject') mReject[idx]++;
             }
         });
-        charts.monthly.data.datasets[0].data = mTotal;
         charts.monthly.data.datasets[1].data = mReject;
+        charts.monthly.data.datasets[0].data = mTotal.map((total, index) => total - mReject[index]);
         charts.monthly.update();
 
         const trackingMap = {};
@@ -629,7 +683,8 @@ loadData();
                     label: `${d.Month} ${d.Year.substring(2)}`,
                     total: 0,
                     reject: 0,
-                    order: parseInt(d.Year, 10) * 12 + defaultMonths.indexOf(d.Month)
+                    order: parseInt(d.Year, 10) * 12 + defaultMonths.indexOf(d.Month),
+                    year: d.Year
                 };
             }
             trackingMap[key].total++;
@@ -637,14 +692,21 @@ loadData();
         });
 
         const orderedPeriods = Object.values(trackingMap).sort((a, b) => a.order - b.order);
+        const yearLabelIndexes = {};
+        defaultYears.forEach(year => {
+            const indexes = orderedPeriods
+                .map((period, index) => period.year === year ? index : -1)
+                .filter(index => index > -1);
+            if (indexes.length > 0) yearLabelIndexes[indexes[Math.floor(indexes.length / 2)]] = year;
+        });
         const annualYearColors = {
     '2024': '#00d2ff',
     '2025': '#8a2be2',
     '2026': '#0055ff'
 };
 
-charts.annual.data.labels = orderedPeriods.map(p => p.label);
-charts.annual.data.datasets[0].data = orderedPeriods.map(p => p.total);
+charts.annual.data.labels = orderedPeriods.map((p, index) => yearLabelIndexes[index] || '');
+charts.annual.data.datasets[0].data = orderedPeriods.map(p => p.total - p.reject);
 charts.annual.data.datasets[0].backgroundColor = orderedPeriods.map(p => {
     const year = p.label.includes('24') ? '2024' : p.label.includes('25') ? '2025' : '2026';
     return annualYearColors[year] || '#00d2ff';
