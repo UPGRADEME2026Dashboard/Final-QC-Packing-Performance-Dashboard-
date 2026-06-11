@@ -442,3 +442,109 @@ body.light-mode .visitor-count {
         opacity: 1;
     }
 }
+
+
+/* =========================
+   RANKING PANELS
+========================= */
+.ranking-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    flex: 1;
+    min-height: 0;
+}
+
+.ranking-panel {
+    min-height: 0;
+    overflow: hidden;
+    border-color: rgba(0, 210, 255, 0.32);
+}
+
+.ranking-list {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 7px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.ranking-row {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 6px;
+}
+
+body.light-mode .ranking-row {
+    background: #f9f9f9;
+    border-color: #eeeeee;
+}
+
+.ranking-head {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 5px;
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.ranking-rank {
+    color: var(--border-blue);
+    text-shadow: var(--glow-blue);
+}
+
+body.light-mode .ranking-rank { text-shadow: none; }
+
+.ranking-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ranking-count {
+    min-width: 34px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    text-align: center;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0055ff, #00d2ff);
+    box-shadow: var(--glow-blue);
+}
+
+body.light-mode .ranking-count {
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 85, 255, 0.18);
+}
+
+.ranking-bar-container {
+    width: 100%;
+    height: 7px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+body.light-mode .ranking-bar-container { background: #dddddd; }
+
+.ranking-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #8a2be2, #0055ff, #00d2ff);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.55);
+    transition: width 0.45s ease;
+}
+
+.data-table,
+.data-table * {
+    -webkit-user-modify: read-only;
+    user-modify: read-only;
+}
+
+
+@media (max-width: 760px) {
+    .ranking-grid { grid-template-columns: 1fr; }
+}

@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initCharts();
 initThemeToggle();
 initFilterButtons();
+lockDashboardReadOnly();
 
 loadData();
 
@@ -227,6 +228,7 @@ loadData();
         updatePackingQCTracks(filteredData);
         updateCategoriesList(filteredData);
         updateFinalProductList(peopleFilteredData);
+        updateRankingLists(filteredData);
         updateChartsData(filteredData);
     }
 
@@ -449,6 +451,78 @@ loadData();
         }).join('');
     }
 
+    function updateRankingLists(data) {
+        renderRankingList(
+            'inspectionRejectRankingList',
+            buildStatusRanking(data, 'Inspection_By', 'Reject'),
+            'Reject'
+        );
+
+        renderRankingList(
+            'qcPassRankingList',
+            buildStatusRanking(data, 'QC_Name', 'Pass'),
+            'Pass'
+        );
+    }
+
+    function buildStatusRanking(data, field, status) {
+        const counts = {};
+        data.forEach(row => {
+            if (row.Inspection_Status !== status) return;
+            const name = cleanValue(row[field], 'Unknown');
+            counts[name] = (counts[name] || 0) + 1;
+        });
+
+        return Object.keys(counts)
+            .map(name => ({ name, count: counts[name] }))
+            .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+    }
+
+    function renderRankingList(containerId, rankingData, label) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        if (rankingData.length === 0) {
+            container.innerHTML = `<div class="empty-state">No ${escapeHtml(label.toLowerCase())} records</div>`;
+            return;
+        }
+
+        const maxCount = rankingData[0].count || 1;
+        rankingData.forEach((item, index) => {
+            const fillPct = Math.max((item.count / maxCount) * 100, 4);
+            const row = document.createElement('div');
+            row.className = 'ranking-row';
+            row.innerHTML = `
+                <div class="ranking-head">
+                    <span class="ranking-rank">#${index + 1}</span>
+                    <span class="ranking-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
+                    <span class="ranking-count">${item.count}</span>
+                </div>
+                <div class="ranking-bar-container">
+                    <div class="ranking-bar" style="width: ${fillPct}%"></div>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function lockDashboardReadOnly() {
+        document.addEventListener('input', event => {
+            if (event.target && event.target.closest('.data-table')) event.preventDefault();
+        }, true);
+
+        document.addEventListener('paste', event => {
+            if (event.target && event.target.closest('.data-table')) event.preventDefault();
+        }, true);
+
+        document.querySelectorAll('table, td, th').forEach(el => {
+            el.setAttribute('contenteditable', 'false');
+            el.setAttribute('aria-readonly', 'true');
+        });
+    }
+
     function initCharts() {
         const dlConfig = {
             display: true,
@@ -497,67 +571,6 @@ loadData();
                 scales: { x: { grid: { display: false } }, y: { display: false, beginAtZero: true, grace: '26%' } }
             }
         });
-
-        charts.annual = new Chart(document.getElementById('annualChart').getContext('2d'), {
-    type: 'bar',
-    data: {
-        labels: [],
-        datasets: [
-            { label: 'Total Devices', data: [], backgroundColor: [], borderRadius: 2 },
-            { label: 'Reject', data: [], backgroundColor: '#ff003d', borderRadius: 2 }
-        ]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    color: function() {
-                        return document.body.classList.contains('light-mode') ? '#111111' : '#ffffff';
-                    },
-                    boxWidth: 12,
-                    padding: 10,
-                    font: {
-                        size: 11,
-                        weight: 'bold'
-                    },
-                    generateLabels: function(chart) {
-                        return chart.data.datasets.map((dataset, index) => ({
-                            text: dataset.label,
-                            fillStyle: Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[0] : dataset.backgroundColor,
-                            strokeStyle: Array.isArray(dataset.backgroundColor) ? dataset.backgroundColor[0] : dataset.backgroundColor,
-                            fontColor: document.body.classList.contains('light-mode') ? '#111111' : '#ffffff',
-                            lineWidth: 1,
-                            hidden: !chart.isDatasetVisible(index),
-                            datasetIndex: index
-                        }));
-                    }
-                }
-            },
-           datalabels: qualityLabelConfig
-        },
-        layout: { padding: { top: 26, right: 14, bottom: 8, left: 14 } },
-        scales: {
-            x: {
-                grid: { display: false },
-                ticks: {
-                    font: { size: 8 },
-                    color: function() {
-                        return document.body.classList.contains('light-mode') ? '#222222' : '#ffffff';
-                    }
-                }
-            },
-            y: {
-                display: false,
-                beginAtZero: true,
-                grace: '28%'
-            }
-        }
-    }
-});
 
        charts.ratio = new Chart(document.getElementById('ratioChart').getContext('2d'), {
     type: 'doughnut',
@@ -674,45 +687,6 @@ loadData();
         charts.monthly.data.datasets[1].data = mReject;
         charts.monthly.data.datasets[0].data = mTotal.map((total, index) => total - mReject[index]);
         charts.monthly.update();
-
-        const trackingMap = {};
-        data.forEach(d => {
-            const key = `${d.Year}-${d.Month}`;
-            if (!trackingMap[key]) {
-                trackingMap[key] = {
-                    label: `${d.Month} ${d.Year.substring(2)}`,
-                    total: 0,
-                    reject: 0,
-                    order: parseInt(d.Year, 10) * 12 + defaultMonths.indexOf(d.Month),
-                    year: d.Year
-                };
-            }
-            trackingMap[key].total++;
-            if (d.Inspection_Status === 'Reject') trackingMap[key].reject++;
-        });
-
-        const orderedPeriods = Object.values(trackingMap).sort((a, b) => a.order - b.order);
-        const yearLabelIndexes = {};
-        defaultYears.forEach(year => {
-            const indexes = orderedPeriods
-                .map((period, index) => period.year === year ? index : -1)
-                .filter(index => index > -1);
-            if (indexes.length > 0) yearLabelIndexes[indexes[Math.floor(indexes.length / 2)]] = year;
-        });
-        const annualYearColors = {
-    '2024': '#00d2ff',
-    '2025': '#8a2be2',
-    '2026': '#0055ff'
-};
-
-charts.annual.data.labels = orderedPeriods.map((p, index) => yearLabelIndexes[index] || '');
-charts.annual.data.datasets[0].data = orderedPeriods.map(p => p.total - p.reject);
-charts.annual.data.datasets[0].backgroundColor = orderedPeriods.map(p => {
-    const year = p.label.includes('24') ? '2024' : p.label.includes('25') ? '2025' : '2026';
-    return annualYearColors[year] || '#00d2ff';
-});
-charts.annual.data.datasets[1].data = orderedPeriods.map(p => p.reject);
-charts.annual.update();
 
         const totalRejects = data.filter(d => d.Inspection_Status === 'Reject').length;
         const totalPasses = data.length - totalRejects;
