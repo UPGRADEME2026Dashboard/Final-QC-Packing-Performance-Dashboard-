@@ -1,35 +1,88 @@
 (function() {
     'use strict';
 
-    const USERNAME = 'UpGrade';
-    const PASSWORD = 'UPGRADE2026';
-    const SESSION_KEY = 'upgradeDashboardAuthenticated';
-    const REMEMBER_KEY = 'upgradeDashboardRemembered';
+    const firebaseConfig = {
+    apiKey: "AIzaSyCMMYNLrbzZKqYH_JOIhVPOLEwyJXXSwGg",
+    authDomain: "upgrade-dashboard-dc693.firebaseapp.com",
+    databaseURL: "https://upgrade-dashboard-dc693-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "upgrade-dashboard-dc693",
+    storageBucket: "upgrade-dashboard-dc693.firebasestorage.app",
+    messagingSenderId: "35769189924",
+    appId: "1:35769189924:web:ac0f99415a93860c58fab1",
+    measurementId: "G-S6YVBY3QHW"
+};
 
-    function isAuthenticated() {
-        return sessionStorage.getItem(SESSION_KEY) === 'true' || localStorage.getItem(REMEMBER_KEY) === 'true';
+    const LOGIN_PAGE = 'login.html';
+    const DASHBOARD_PAGE = 'index.html';
+
+    if (!window.firebase || !window.firebase.auth) {
+        console.error('Firebase Auth SDK is not loaded.');
+        return;
     }
 
-    function login(username, password, rememberSession) {
-        const valid = username === USERNAME && password === PASSWORD;
-        if (!valid) return false;
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
 
-        sessionStorage.setItem(SESSION_KEY, 'true');
-        if (rememberSession) localStorage.setItem(REMEMBER_KEY, 'true');
-        else localStorage.removeItem(REMEMBER_KEY);
+    const auth = firebase.auth();
+    const currentPage = (window.location.pathname.split('/').pop() || DASHBOARD_PAGE).toLowerCase();
+    const isLoginPage = currentPage === LOGIN_PAGE;
+
+    function setAuthLoading(isLoading) {
+        document.documentElement.classList.toggle('auth-checking', !!isLoading);
+        document.documentElement.classList.toggle('auth-ready', !isLoading);
+    }
+
+    setAuthLoading(!isLoginPage);
+
+    function normalizeEmail(value) {
+        return String(value || '').trim().toLowerCase();
+    }
+
+    async function login(email, password, rememberSession) {
+        const persistence = rememberSession
+            ? firebase.auth.Auth.Persistence.LOCAL
+            : firebase.auth.Auth.Persistence.SESSION;
+
+        await auth.setPersistence(persistence);
+        await auth.signInWithEmailAndPassword(normalizeEmail(email), password);
         return true;
     }
 
-    function logout() {
-        sessionStorage.removeItem(SESSION_KEY);
-        localStorage.removeItem(REMEMBER_KEY);
-        window.location.replace('login.html');
+    async function logout() {
+        await auth.signOut();
+        window.location.replace(LOGIN_PAGE);
     }
 
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    if (currentPage !== 'login.html' && !isAuthenticated()) {
-        window.location.replace('login.html');
+    function isAuthenticated() {
+        return !!auth.currentUser;
     }
 
-    window.UpgradeAuth = { isAuthenticated, login, logout };
+    const authReady = new Promise(resolve => {
+        auth.onAuthStateChanged(user => {
+            if (!isLoginPage && !user) {
+                window.location.replace(LOGIN_PAGE);
+                resolve(null);
+                return;
+            }
+
+            if (isLoginPage && user) {
+                window.location.replace(DASHBOARD_PAGE);
+                resolve(user);
+                return;
+            }
+
+            setAuthLoading(false);
+            resolve(user);
+        });
+    });
+
+    window.UpgradeAuth = {
+        auth,
+        authReady,
+        isAuthenticated,
+        login,
+        logout,
+        defaultEmail: 'upgrade@upgrade.com'
+    };
 })();

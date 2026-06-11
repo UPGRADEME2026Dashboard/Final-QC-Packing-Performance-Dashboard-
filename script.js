@@ -20,13 +20,22 @@ document.addEventListener('DOMContentLoaded', function() {
         products: []
     };
 
-    initCharts();
-initThemeToggle();
-initFilterButtons();
-initLogoutButton();
-lockDashboardReadOnly();
+    function bootDashboard() {
+        initCharts();
+        initThemeToggle();
+        initFilterButtons();
+        initLogoutButton();
+        lockDashboardReadOnly();
+        loadData();
+    }
 
-loadData();
+    if (window.UpgradeAuth && window.UpgradeAuth.authReady) {
+        window.UpgradeAuth.authReady.then(user => {
+            if (user) bootDashboard();
+        });
+    } else {
+        bootDashboard();
+    }
 
     function initThemeToggle() {
         const themeBtn = document.getElementById('themeToggleBtn');

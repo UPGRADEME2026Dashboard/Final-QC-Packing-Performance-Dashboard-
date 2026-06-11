@@ -1,3 +1,12 @@
+html.auth-checking body:not(.login-page) .dashboard-container {
+    visibility: hidden;
+}
+
+.login-btn:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+
 :root {
     --bg-dark: #020208;
     --panel-bg: rgba(6, 6, 22, 0.78);

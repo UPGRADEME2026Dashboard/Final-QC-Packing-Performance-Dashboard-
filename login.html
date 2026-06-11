@@ -6,6 +6,8 @@
     <title>Upgrade Dashboard Login</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="auth.js"></script>
 </head>
 <body class="login-page">
@@ -15,8 +17,8 @@
 
         <form id="loginForm" autocomplete="off">
             <div class="login-field">
-                <label for="username">Username</label>
-                <input id="username" name="username" type="text" autocomplete="username" required>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" autocomplete="username" value="upgrade@upgrade.com" required>
             </div>
 
             <div class="login-field">
@@ -38,23 +40,28 @@
     </main>
 
     <script>
-        if (window.UpgradeAuth && window.UpgradeAuth.isAuthenticated()) {
-            window.location.replace('index.html');
-        }
+        const form = document.getElementById('loginForm');
+        const error = document.getElementById('loginError');
+        const submitButton = form.querySelector('button[type="submit"]');
 
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
+        form.addEventListener('submit', async function(event) {
             event.preventDefault();
-            const username = document.getElementById('username').value.trim();
+            error.textContent = '';
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const remember = document.getElementById('rememberSession').checked;
-            const error = document.getElementById('loginError');
 
-            if (window.UpgradeAuth.login(username, password, remember)) {
+            try {
+                await window.UpgradeAuth.login(email, password, remember);
                 window.location.replace('index.html');
-                return;
+            } catch (err) {
+                error.textContent = 'Invalid email or password';
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="fas fa-right-to-bracket"></i> Login';
             }
-
-            error.textContent = 'Invalid username or password';
         });
     </script>
 </body>

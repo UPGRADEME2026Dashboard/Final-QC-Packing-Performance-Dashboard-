@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inspection & Packing Dashboard</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <script src="auth.js"></script>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -181,76 +184,39 @@
             </div>
         </div>
     </div>
-    <!-- Firebase -->
-<script type="module">
+    <!-- Firebase Visitors Counter -->
+<script>
+(function() {
+    if (!window.firebase || !firebase.apps.length || !firebase.database) return;
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    const db = firebase.database();
+    const visitorId = 'visitor_' + Math.random().toString(36).substring(2, 12);
+    const visitorRef = db.ref('activeVisitors/' + visitorId);
 
-import {
-    getDatabase,
-    ref,
-    set,
-    onValue,
-    onDisconnect
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCMMYNLrbzZKqYH_JOIhVPOLEwyJXXSwGg",
-    authDomain: "upgrade-dashboard-dc693.firebaseapp.com",
-   databaseURL: "https://upgrade-dashboard-dc693-default-rtdb.asia-southeast1.firebasedatabase.app/",
-    projectId: "upgrade-dashboard-dc693",
-    storageBucket: "upgrade-dashboard-dc693.firebasestorage.app",
-    messagingSenderId: "35769189924",
-    appId: "1:35769189924:web:ac0f99415a93860c58fab1",
-    measurementId: "G-S6YVBY3QHW"
-};
-
-const app = initializeApp(firebaseConfig);
-
-const db = getDatabase(app);
-
-const visitorId =
-    'visitor_' +
-    Math.random().toString(36).substring(2, 12);
-
-const visitorRef = ref(db, 'activeVisitors/' + visitorId);
-
-set(visitorRef, {
-    active: true,
-    lastSeen: Date.now(),
-    page: location.pathname
-});
-onDisconnect(visitorRef).remove();
-
-const activeVisitorsRef = ref(db, 'activeVisitors');
-
-onValue(activeVisitorsRef, (snapshot) => {
-    const data = snapshot.val();
-    const now = Date.now();
-
-    const count = data
-        ? Object.values(data).filter(v =>
-            v &&
-            v.lastSeen &&
-            (now - v.lastSeen < 10000)
-        ).length
-        : 0;
-
-    const counterEl = document.getElementById('visitorCount');
-
-    if (counterEl) {
-        counterEl.textContent = count;
+    function touchVisitor() {
+        visitorRef.set({
+            active: true,
+            lastSeen: Date.now(),
+            page: location.pathname
+        });
     }
-});
 
-setInterval(() => {
-    set(visitorRef, {
-        active: true,
-        lastSeen: Date.now(),
-        page: location.pathname
+    touchVisitor();
+    visitorRef.onDisconnect().remove();
+
+    db.ref('activeVisitors').on('value', (snapshot) => {
+        const data = snapshot.val();
+        const now = Date.now();
+        const count = data
+            ? Object.values(data).filter(v => v && v.lastSeen && (now - v.lastSeen < 10000)).length
+            : 0;
+
+        const counterEl = document.getElementById('visitorCount');
+        if (counterEl) counterEl.textContent = count;
     });
-}, 5000);
 
+    setInterval(touchVisitor, 5000);
+})();
 </script>
 
 <script src="script.js"></script>
