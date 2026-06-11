@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Dashboard Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="auth.js"></script>
+</head>
+<body class="login-page">
+    <main class="login-shell">
+        <img src="upgrade-logo.png" alt="Upgrade" class="login-logo" onerror="this.style.display='none'">
+        <h1 class="login-title">Dashboard Login</h1>
+
+        <form id="loginForm" autocomplete="off">
+            <div class="login-field">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" autocomplete="username" required>
+            </div>
+
+            <div class="login-field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required>
+            </div>
+
+            <label class="login-options">
+                <input id="rememberSession" type="checkbox">
+                <span>Remember Session</span>
+            </label>
+
+            <button class="login-btn" type="submit">
+                <i class="fas fa-right-to-bracket"></i> Login
+            </button>
+
+            <div class="login-error" id="loginError"></div>
+        </form>
+    </main>
+
+    <script>
+        if (window.UpgradeAuth && window.UpgradeAuth.isAuthenticated()) {
+            window.location.replace('index.html');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('rememberSession').checked;
+            const error = document.getElementById('loginError');
+
+            if (window.UpgradeAuth.login(username, password, remember)) {
+                window.location.replace('index.html');
+                return;
+            }
+
+            error.textContent = 'Invalid username or password';
+        });
+    </script>
+</body>
+</html>

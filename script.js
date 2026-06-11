@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initCharts();
 initThemeToggle();
 initFilterButtons();
+initLogoutButton();
 lockDashboardReadOnly();
 
 loadData();
@@ -84,6 +85,24 @@ loadData();
             };
         document.querySelectorAll('.filter-btn').forEach(button => button.classList.add('active'));
         applyFiltersAndRender();
+        });
+    }
+
+
+
+    function initLogoutButton() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (!logoutBtn) return;
+
+        logoutBtn.addEventListener('click', function() {
+            if (window.UpgradeAuth && typeof window.UpgradeAuth.logout === 'function') {
+                window.UpgradeAuth.logout();
+                return;
+            }
+
+            sessionStorage.removeItem('upgradeDashboardAuthenticated');
+            localStorage.removeItem('upgradeDashboardRemembered');
+            window.location.replace('login.html');
         });
     }
 
@@ -509,17 +528,33 @@ loadData();
     }
 
     function lockDashboardReadOnly() {
-        document.addEventListener('input', event => {
-            if (event.target && event.target.closest('.data-table')) event.preventDefault();
-        }, true);
+        const preventEditableAction = event => {
+            const target = event.target;
+            if (!target) return;
+            const isEditableArea = target.closest('.data-table') || target.closest('.kpi-card') || target.closest('.panel');
+            const isAllowedControl = target.closest('button, .filter-btn, .product-row, .qc-bar-row, .dept-title, #themeToggleBtn, #logoutBtn');
+            if (isEditableArea && !isAllowedControl) event.preventDefault();
+        };
 
-        document.addEventListener('paste', event => {
-            if (event.target && event.target.closest('.data-table')) event.preventDefault();
-        }, true);
+        document.addEventListener('beforeinput', preventEditableAction, true);
+        document.addEventListener('input', preventEditableAction, true);
+        document.addEventListener('paste', preventEditableAction, true);
+        document.addEventListener('drop', preventEditableAction, true);
 
-        document.querySelectorAll('table, td, th').forEach(el => {
-            el.setAttribute('contenteditable', 'false');
-            el.setAttribute('aria-readonly', 'true');
+        const applyReadOnlyAttributes = () => {
+            document.querySelectorAll('table, thead, tbody, tr, td, th, .kpi-value, .ranking-list, .categories-list').forEach(el => {
+                el.setAttribute('contenteditable', 'false');
+                el.setAttribute('aria-readonly', 'true');
+                el.draggable = false;
+            });
+        };
+
+        applyReadOnlyAttributes();
+
+        const observer = new MutationObserver(applyReadOnlyAttributes);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     }
 
