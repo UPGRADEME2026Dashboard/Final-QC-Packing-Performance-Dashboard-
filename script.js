@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function initLogoutButton() {
+        updateLoggedInUserBadge();
+
         const logoutBtn = document.getElementById('logoutBtn');
         if (!logoutBtn) return;
 
@@ -113,6 +115,22 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.removeItem('upgradeDashboardRemembered');
             window.location.replace('login.html');
         });
+    }
+
+    function updateLoggedInUserBadge() {
+        const userEmailEl = document.getElementById('authUserEmail');
+        if (!userEmailEl) return;
+
+        const user = window.UpgradeAuth && window.UpgradeAuth.auth
+            ? window.UpgradeAuth.auth.currentUser
+            : null;
+
+        const displayValue = user && (user.displayName || user.email)
+            ? (user.displayName || user.email)
+            : 'Authorized User';
+
+        userEmailEl.textContent = displayValue;
+        userEmailEl.title = displayValue;
     }
 
     function loadData() {

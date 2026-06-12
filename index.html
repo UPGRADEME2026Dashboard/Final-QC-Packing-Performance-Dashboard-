@@ -18,7 +18,16 @@
 <body>
     <div class="dashboard-container">
         <header class="dashboard-header">
-            <div class="header-left"></div>
+            <div class="header-left">
+                <div class="user-session-card" id="userSessionCard" title="Signed in user">
+                    <span class="user-avatar"><i class="fas fa-user-shield"></i></span>
+                    <span class="user-session-text">
+                        <span class="user-session-label">Signed in as</span>
+                        <span class="user-session-email" id="authUserEmail">Loading...</span>
+                    </span>
+                </div>
+                <button class="logout-btn" id="logoutBtn" type="button" title="Logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
             <div class="header-center">
                 <img src="upgrade-logo.png" alt="Upgrade" class="brand-logo" onerror="this.style.display='none'">
                 <h2 class="sub-glow-text">Final QC & Packing Performance Dashboard</h2>
@@ -37,7 +46,6 @@
         </div>
     </div>
 
-    <button class="logout-btn" id="logoutBtn" type="button" title="Logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
 
     <i class="fas fa-sun theme-toggle-btn" id="themeToggleBtn" title="Toggle Light/Dark Mode"></i>
 </div>

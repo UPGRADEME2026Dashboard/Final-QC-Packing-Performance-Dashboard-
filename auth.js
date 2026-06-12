@@ -77,10 +77,15 @@
         });
     });
 
+    function getCurrentUser() {
+        return auth.currentUser;
+    }
+
     window.UpgradeAuth = {
         auth,
         authReady,
         isAuthenticated,
+        getCurrentUser,
         login,
         logout,
         defaultEmail: 'upgrade@upgrade.com'
