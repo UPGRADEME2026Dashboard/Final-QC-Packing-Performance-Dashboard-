@@ -46,6 +46,13 @@
         </div>
     </div>
 
+    <div class="online-users-card admin-only" id="adminOnlineUsersCard" hidden title="Visible for Admin only">
+        <div class="online-users-head">
+            <span><i class="fas fa-users-viewfinder"></i> Online Users</span>
+            <span class="online-users-count" id="onlineUsersCount">0</span>
+        </div>
+        <div class="online-users-list custom-scroll" id="onlineUsersList"></div>
+    </div>
 
     <i class="fas fa-sun theme-toggle-btn" id="themeToggleBtn" title="Toggle Light/Dark Mode"></i>
 </div>
@@ -197,33 +204,47 @@
 (function() {
     if (!window.firebase || !firebase.apps.length || !firebase.database) return;
 
-    const db = firebase.database();
-    const visitorId = 'visitor_' + Math.random().toString(36).substring(2, 12);
-    const visitorRef = db.ref('activeVisitors/' + visitorId);
+    function startVisitorsCounter() {
+        if (!firebase.auth || !firebase.auth().currentUser) return;
 
-    function touchVisitor() {
-        visitorRef.set({
-            active: true,
-            lastSeen: Date.now(),
-            page: location.pathname
-        });
+        const db = firebase.database();
+        const visitorId = 'visitor_' + Math.random().toString(36).substring(2, 12);
+        const visitorRef = db.ref('activeVisitors/' + visitorId);
+
+        function touchVisitor() {
+            visitorRef.set({
+                active: true,
+                lastSeen: Date.now(),
+                page: location.pathname
+            }).catch(() => {});
+        }
+
+        touchVisitor();
+        visitorRef.onDisconnect().remove();
+
+        db.ref('activeVisitors').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const now = Date.now();
+            const count = data
+                ? Object.values(data).filter(v => v && v.lastSeen && (now - v.lastSeen < 10000)).length
+                : 0;
+
+            const counterEl = document.getElementById('visitorCount');
+            if (counterEl) counterEl.textContent = count;
+        }, () => {});
+
+        setInterval(touchVisitor, 5000);
     }
 
-    touchVisitor();
-    visitorRef.onDisconnect().remove();
-
-    db.ref('activeVisitors').on('value', (snapshot) => {
-        const data = snapshot.val();
-        const now = Date.now();
-        const count = data
-            ? Object.values(data).filter(v => v && v.lastSeen && (now - v.lastSeen < 10000)).length
-            : 0;
-
-        const counterEl = document.getElementById('visitorCount');
-        if (counterEl) counterEl.textContent = count;
-    });
-
-    setInterval(touchVisitor, 5000);
+    if (window.UpgradeAuth && window.UpgradeAuth.authReady) {
+        window.UpgradeAuth.authReady.then(user => {
+            if (user) startVisitorsCounter();
+        });
+    } else if (firebase.auth) {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) startVisitorsCounter();
+        });
+    }
 })();
 </script>
 

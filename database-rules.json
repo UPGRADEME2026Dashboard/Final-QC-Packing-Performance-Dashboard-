@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "activeVisitors": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "onlineUsers": {
+      ".read": "auth != null && auth.token.email == 'upgrade@upgrade.com'",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    ".read": false,
+    ".write": false
+  }
+}

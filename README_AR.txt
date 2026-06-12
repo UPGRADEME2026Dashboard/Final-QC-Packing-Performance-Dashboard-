@@ -43,3 +43,28 @@ Password: UPGRADE2026
 تحديث إضافي:
 - تم إضافة شارة أنيقة في يسار الهيدر لعرض البريد/اسم المستخدم المسجل دخوله.
 - تم نقل زر Logout بجانب بيانات المستخدم في يسار الصفحة.
+
+
+تحديث Online Users:
+- تم إضافة تتبع المستخدمين المتواجدين الآن عبر Firebase Realtime Database.
+- قائمة Online Users تظهر فقط لحساب Admin: upgrade@upgrade.com.
+- الحسابات الأخرى مثل mona@upgrade.com و ehab@upgrade.com لن تظهر لهم هذه القائمة.
+- جميع المستخدمين يرون فقط بريدهم الحالي وزر Logout.
+
+قواعد Realtime Database المطلوبة بعد هذا التحديث:
+{
+  "rules": {
+    "activeVisitors": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "onlineUsers": {
+      ".read": "auth != null && auth.token.email == 'upgrade@upgrade.com'",
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    ".read": false,
+    ".write": false
+  }
+}

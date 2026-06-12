@@ -371,6 +371,148 @@ body.light-mode .user-session-card {
 
 body.light-mode .user-session-email { color: #111111; }
 
+
+/* =========================
+   ADMIN ONLINE USERS PANEL
+========================= */
+.online-users-card[hidden] {
+    display: none !important;
+}
+
+.online-users-card {
+    position: relative;
+    min-width: 170px;
+    max-width: 220px;
+    border-radius: 12px;
+    padding: 6px 8px;
+    background: linear-gradient(145deg, rgba(4, 12, 22, 0.96), rgba(0, 0, 0, 0.88));
+    border: 1px solid rgba(34, 255, 153, 0.18);
+    box-shadow: inset 0 0 12px rgba(34, 255, 153, 0.05), 0 0 12px rgba(0, 210, 255, 0.05);
+    color: var(--text-main);
+}
+
+.online-users-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.online-users-head i {
+    color: #22ff99;
+    margin-right: 4px;
+}
+
+.online-users-count {
+    min-width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #001018;
+    background: linear-gradient(145deg, #22ff99, #00d2ff);
+    font-size: 10px;
+    font-weight: 900;
+    box-shadow: 0 0 10px rgba(34, 255, 153, 0.25);
+}
+
+.online-users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 92px;
+    overflow-y: auto;
+    margin-top: 6px;
+    padding-right: 2px;
+}
+
+.online-user-row {
+    display: grid;
+    grid-template-columns: 8px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 5px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.online-user-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22ff99;
+    box-shadow: 0 0 8px rgba(34,255,153,0.85);
+}
+
+.online-user-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.online-user-name {
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 900;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.online-user-email {
+    color: var(--text-muted);
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.online-user-time {
+    color: #22ff99;
+    font-size: 8px;
+    font-weight: 900;
+}
+
+.online-user-empty {
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 800;
+    padding: 5px;
+    text-align: center;
+}
+
+body.light-mode .online-users-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(242,245,248,0.98));
+    border-color: rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+body.light-mode .online-users-head,
+body.light-mode .online-user-name {
+    color: #111111;
+}
+
+body.light-mode .online-user-row {
+    background: #ffffff;
+    border-color: #eeeeee;
+}
+
+@media (max-width: 900px) {
+    .online-users-card {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
 /* =========================
    LIVE VISITORS BADGE
 ========================= */
@@ -901,5 +1043,28 @@ body.light-mode .logout-btn {
 
     .user-session-email {
         max-width: calc(100vw - 220px);
+    }
+}
+
+
+@media (max-width: 760px) {
+    .header-left {
+        width: 100%;
+        min-width: 0;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .user-session-card {
+        max-width: min(100%, 310px);
+    }
+
+    .user-session-email {
+        max-width: 210px;
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }

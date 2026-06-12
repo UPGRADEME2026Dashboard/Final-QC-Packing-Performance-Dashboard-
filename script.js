@@ -20,6 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
         products: []
     };
 
+    const ADMIN_EMAIL = 'upgrade@upgrade.com';
+    let onlineUsersHeartbeatId = null;
+    let onlineUsersRef = null;
+
     function bootDashboard() {
         initCharts();
         initThemeToggle();
@@ -31,7 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (window.UpgradeAuth && window.UpgradeAuth.authReady) {
         window.UpgradeAuth.authReady.then(user => {
-            if (user) bootDashboard();
+            if (user) {
+                bootDashboard();
+                initOnlineUsersTracking(user);
+            }
         });
     } else {
         bootDashboard();
@@ -131,6 +138,107 @@ document.addEventListener('DOMContentLoaded', function() {
 
         userEmailEl.textContent = displayValue;
         userEmailEl.title = displayValue;
+    }
+
+    function initOnlineUsersTracking(user) {
+        if (!user || !window.firebase || !firebase.database) return;
+
+        const email = String(user.email || '').trim().toLowerCase();
+        const uid = user.uid;
+        const db = firebase.database();
+        onlineUsersRef = db.ref('onlineUsers/' + uid);
+
+        function buildPresencePayload() {
+            return {
+                email: email || 'unknown',
+                displayName: user.displayName || '',
+                lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                page: location.pathname,
+                userAgent: navigator.userAgent || ''
+            };
+        }
+
+        function updatePresence() {
+            onlineUsersRef.set(buildPresencePayload()).catch(() => {});
+        }
+
+        updatePresence();
+        onlineUsersRef.onDisconnect().remove();
+
+        if (onlineUsersHeartbeatId) clearInterval(onlineUsersHeartbeatId);
+        onlineUsersHeartbeatId = setInterval(updatePresence, 15000);
+
+        window.addEventListener('beforeunload', () => {
+            if (onlineUsersRef) onlineUsersRef.remove().catch(() => {});
+        });
+
+        if (email === ADMIN_EMAIL) {
+            initAdminOnlineUsersPanel(db);
+        } else {
+            hideAdminOnlineUsersPanel();
+        }
+    }
+
+    function initAdminOnlineUsersPanel(db) {
+        const card = document.getElementById('adminOnlineUsersCard');
+        if (!card) return;
+
+        card.hidden = false;
+        card.classList.add('visible-admin-online');
+
+        db.ref('onlineUsers').on('value', snapshot => {
+            const data = snapshot.val() || {};
+            const now = Date.now();
+            const online = Object.values(data)
+                .filter(item => item && item.email && item.lastSeen && (now - Number(item.lastSeen) < 45000))
+                .sort((a, b) => String(a.email).localeCompare(String(b.email)));
+
+            renderAdminOnlineUsers(online);
+        }, () => {
+            renderAdminOnlineUsers([]);
+        });
+    }
+
+    function renderAdminOnlineUsers(onlineUsers) {
+        const countEl = document.getElementById('onlineUsersCount');
+        const listEl = document.getElementById('onlineUsersList');
+        if (!countEl || !listEl) return;
+
+        countEl.textContent = onlineUsers.length;
+
+        if (onlineUsers.length === 0) {
+            listEl.innerHTML = '<div class="online-user-empty">No online users</div>';
+            return;
+        }
+
+        listEl.innerHTML = onlineUsers.map(user => {
+            const email = escapeHtml(user.email || 'Unknown');
+            const label = escapeHtml((user.displayName || user.email || 'Unknown').split('@')[0]);
+            const lastSeenText = user.lastSeen ? formatOnlineTime(user.lastSeen) : '';
+            return `
+                <div class="online-user-row" title="${email}">
+                    <span class="online-user-dot"></span>
+                    <span class="online-user-info">
+                        <span class="online-user-name">${label}</span>
+                        <span class="online-user-email">${email}</span>
+                    </span>
+                    <span class="online-user-time">${lastSeenText}</span>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function hideAdminOnlineUsersPanel() {
+        const card = document.getElementById('adminOnlineUsersCard');
+        if (!card) return;
+        card.hidden = true;
+        card.classList.remove('visible-admin-online');
+    }
+
+    function formatOnlineTime(value) {
+        const date = new Date(Number(value));
+        if (Number.isNaN(date.getTime())) return '';
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
 
     function loadData() {
