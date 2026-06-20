@@ -614,8 +614,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         renderRankingList(
             'qcPassRankingList',
-            buildStatusRanking(data, 'QC_Name', 'Pass'),
-            'Pass'
+            buildStatusRanking(data, 'QC_Name', 'Reject'),
+            'Reject'
         );
     }
 
