@@ -141,7 +141,7 @@ RMK-1220 ,27-Apr-24,Platinum,Fady,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1236 ,27-Apr-24,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1181 ,28-Apr-24,Platinum,Fady,Pass,M.elsayed,Passed,Apr,2024
 RMK-1267,28-Apr-24,Gold,A.Lotfy,Reject,M.elsayed,Grade Upgrade,Apr,2024
-RMK-1187,28-Apr-24,Platinum,Hatem,Reject,M.Basiuony,Data error,Apr,2024
+RMK-1187,28-Apr-24,Platinum,Hatem,Reject,M.Basiuony,Data Entry Mistake,Apr,2024
 RMK-1269 ,28-Apr-24,Gold,Fady,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1292,28-Apr-24,Platinum,Hatem,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1190  ,28-Apr-24,Platinum,Fady,Pass,M.Basiuony,Passed,Apr,2024
@@ -185,7 +185,7 @@ RMK-1408 ,29-Apr-24,Platinum,Hossam,Pass,Ehab Sadar,Passed,Apr,2024
 UMA-61,29-Apr-24,Platinum,Hatem,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1186,29-Apr-24,Platinum,Hatem,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1201,29-Apr-24,Platinum,Hatem,Reject,M.elsayed,Screws Issue,Apr,2024
-RNG-123,29-Apr-24,Platinum,Hatem,Reject,M.Basiuony,Screen Issue,Apr,2024
+RNG-123,29-Apr-24,Gold,Hatem,Reject,M.Basiuony,Grade Downgrade,Apr,2024
 RMK-754,29-Apr-24,Platinum,Hatem,Pass,M.elsayed,Passed,Apr,2024
 UMA-54,30-Apr-24,Platinum,Hatem,Pass,Ehab Sadar,Passed,Apr,2024
 RMK-1289,30-Apr-24,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Apr,2024
@@ -193,7 +193,7 @@ RMK-1426,30-Apr-24,Platinum,Fady,Pass,M.elsayed,Passed,Apr,2024
 RMK-1446,30-Apr-24,Platinum,Hatem,Reject,Ehab Sadar,Screws Issue,Apr,2024
 UMA-43,30-Apr-24,Platinum,Hatem,Reject,Ehab Sadar,Screws Issue,Apr,2024
 RMK-1245 ,30-Apr-24,Gold,Hossam,Pass,Ehab Sadar,Passed,Apr,2024
-RMK-1264,01-May-24,Platinum,A.Lotfy,Reject,Ehab Sadar,Screen Issue,May,2024
+RMK-1264,01-May-24,Platinum,A.Lotfy,Reject,Ehab Sadar,Uncompleted QC Comment,May,2024
 RMK-1247,01-May-24,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,May,2024
 RMK-1414,01-May-24,Gold,Hossam,Pass,Ehab Sadar,Passed,May,2024
 RMK-1176,01-May-24,Gold,Hatem,Reject,Ehab Sadar,Press Issue,May,2024
@@ -238,7 +238,7 @@ RMK-1210,16-May-24,Gold,Hossam,Reject,M.elsayed,Shipping Issue,May,2024
 RMK-1063 ,18-May-24,Platinum,Fady,Pass,M.Basiuony,Passed,May,2024
 RMK-1274 ,18-May-24,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,May,2024
 RNG-72,18-May-24,Gold,A.Lotfy,Reject,Ehab Sadar,Battery drain Issue,May,2024
-RMK-1078,19-May-24,Platinum,Hatem,Reject,Ehab Sadar,Data error,May,2024
+RMK-1078,19-May-24,Platinum,Hatem,Reject,Ehab Sadar,Data Entry Mistake,May,2024
 RMK-1133 ,19-May-24,Platinum,Hatem,Pass,Ehab Sadar,Passed,May,2024
 PST-1 ,20-May-24,Platinum,Fady,Pass,M.Basiuony,Passed,May,2024
 RMK-630 ,20-May-24,Platinum,Hatem,Pass,M.elsayed,Passed,May,2024
@@ -266,7 +266,7 @@ RMK-1307 ,26-May-24,Platinum,Fady,Pass,M.Basiuony,Passed,May,2024
 RMK-1338 ,26-May-24,Platinum,M.Samir,Pass,M.Basiuony,Passed,May,2024
 RMK-1346 ,26-May-24,Gold,A.Lotfy,Pass,M.Basiuony,Passed,May,2024
 UMA-66 ,27-May-24,Platinum,Fady,Pass,Ehab Sadar,Passed,May,2024
-RMK-1183,27-May-24,Gold,Hatem,Reject,M.Basiuony,Data error,May,2024
+RMK-1183,27-May-24,Gold,Hatem,Reject,M.Basiuony,Data Entry Mistake,May,2024
 RMS-115 ,27-May-24,Platinum,Fady,Pass,Ehab Sadar,Passed,May,2024
 UMA-60 ,27-May-24,Platinum,Hatem,Pass,M.Basiuony,Passed,May,2024
 RMK-1391 ,27-May-24,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,May,2024
@@ -623,7 +623,7 @@ RMK-1637,14-Aug-24,Gold,Hossam,Reject,Ehab Sadar,Uncompleted QC Comment,Aug,2024
 RMK-1639,14-Aug-24,Gold,Hossam,Pass,Ehab Sadar,Passed,Aug,2024
 RMK-1640,14-Aug-24,Platinum,Hossam,Pass,Ehab Sadar,Passed,Aug,2024
 RMK-1643,14-Aug-24,Gold,Hossam,Pass,Ehab Sadar,Passed,Aug,2024
-RMK-1645,14-Aug-24,Gold,Hatem,Reject,M.elsayed,Press Issue,Aug,2024
+RMK-1645,14-Aug-24,Gold,Hatem,Reject,M.elsayed,Exception Granted,Aug,2024
 RMK-1646,14-Aug-24,Gold,A.Lotfy,Pass,M.elsayed,Passed,Aug,2024
 RMK-1647,14-Aug-24,Gold,A.Lotfy,Pass,M.elsayed,Passed,Aug,2024
 RMK-1659,14-Aug-24,Platinum,Fady,Pass,M.elsayed,Passed,Aug,2024
@@ -945,7 +945,7 @@ RMK-257,17-Oct-24,Platinum,Hossam,Pass,Ehab Sadar,Passed,Oct,2024
 OHL-7,19-Oct-24,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2024
 RMK-1894,19-Oct-24,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2024
 RMK-1808,19-Oct-24,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2024
-RMK-1882,20-Oct-24,Platinum,Hossam,Reject,Ehab Sadar,Camera Issue,Oct,2024
+RMK-1882,20-Oct-24,Platinum,Hossam,Reject,Ehab Sadar,Uncompleted QC Comment,Oct,2024
 RMK-1935,20-Oct-24,Platinum,Fady,Pass,M.Basiuony,Passed,Oct,2024
 RMK-1937,20-Oct-24,Gold,Hossam,Pass,M.Basiuony,Passed,Oct,2024
 RMK-1938,20-Oct-24,Platinum,M.Samir,Pass,M.Basiuony,Passed,Oct,2024
@@ -1185,7 +1185,7 @@ RMK-2149,18-Dec-24,Diamond,M.Samir,Pass,Ehab Sadar,Passed,Dec,2024
 RMK-2156,19-Dec-24,Diamond,M.Samir,Pass,M.Basiuony,Passed,Dec,2024
 RMK-2157,19-Dec-24,Diamond,M.Samir,Pass,M.Basiuony,Passed,Dec,2024
 RMK-2161,19-Dec-24,Diamond,M.Samir,Pass,M.Basiuony,Passed,Dec,2024
-RMK-2151,19-Dec-24,Diamond,Fady,Reject,M.Basiuony,Camera Issue,Dec,2024
+RMK-2151,19-Dec-24,Diamond,Fady,Reject,M.Basiuony,Uncompleted QC Comment,Dec,2024
 RMK-2140,19-Dec-24,Diamond,Fady,Pass,Ehab Sadar,Passed,Dec,2024
 RMK-2142,19-Dec-24,Diamond,Fady,Pass,Ehab Sadar,Passed,Dec,2024
 RMK-2134,19-Dec-24,Platinum,Hatem,Pass,Ehab Sadar,Passed,Dec,2024
@@ -1311,7 +1311,7 @@ RMK-2252,04-Feb-25,Diamond,Hossam,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2260,04-Feb-25,Diamond,M.Samir,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2262,04-Feb-25,Diamond,Hatem,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2251,04-Feb-25,Diamond,A.Lotfy,Pass,Ehab Sadar,Passed,Feb,2025
-RMK-2257,04-Feb-25,Diamond,A.Lotfy,Reject,M.Basiuony,Screen Issue,Feb,2025
+RMK-2257,04-Feb-25,Diamond,A.Lotfy,Reject,M.Basiuony,Exception Granted,Feb,2025
 RMK-2236,05-Feb-25,Gold,Hatem,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2265,05-Feb-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2263,05-Feb-25,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Feb,2025
@@ -1323,7 +1323,7 @@ RMK-2274,10-Feb-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2243,11-Feb-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2277,11-Feb-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2276,11-Feb-25,Gold,Hossam,Pass,M.Basiuony,Passed,Feb,2025
-CTS-8,11-Feb-25,Gold,Fady,Reject,M.Basiuony,Data error,Feb,2025
+CTS-8,11-Feb-25,Gold,Fady,Reject,M.Basiuony,Data Entry Mistake,Feb,2025
 CTS-11,12-Feb-25,Platinum,Fady,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2250,12-Feb-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2278,12-Feb-25,Gold,Hossam,Pass,M.Basiuony,Passed,Feb,2025
@@ -1369,7 +1369,7 @@ RMK-2273,17-Feb-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2316,18-Feb-25,Diamond,Fady,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2317,18-Feb-25,Diamond,A.Lotfy,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2268,18-Feb-25,Platinum,Hatem,Pass,Ehab Sadar,Passed,Feb,2025
-RMK-2280,18-Feb-25,Gold,Hossam,Reject,Ehab Sadar,Camera Issue,Feb,2025
+RMK-2280,18-Feb-25,Gold,Hossam,Reject,Ehab Sadar,Uncompleted QC Comment,Feb,2025
 CTS-15,19-Feb-25,Gold,Fady,Pass,Ehab Sadar,Passed,Feb,2025
 RMK-2256,19-Feb-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Feb,2025
 CTS-9,19-Feb-25,Gold,Hatem,Reject,Ehab Sadar,Screws Issue,Feb,2025
@@ -1409,7 +1409,7 @@ RMK-2352,27-Feb-25,Platinum,Hatem,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2353,27-Feb-25,Diamond,A.Lotfy,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2247,27-Feb-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Feb,2025
 RMK-2328,27-Feb-25,Gold,Hatem,Pass,M.Basiuony,Passed,Feb,2025
-RMK-2345,27-Feb-25,Diamond,Hossam,Reject,M.Basiuony,Data error,Feb,2025
+RMK-2345,27-Feb-25,Diamond,Hossam,Reject,M.Basiuony,Data error (SIM-Locked),Feb,2025
 RMK-2198,03-Mar-25,RF-WH,A.Lotfy,Pass,M.Basiuony,Passed,Mar,2025
 RMK-2269,03-Mar-25,Gold,Hossam,Pass,M.Basiuony,Passed,Mar,2025
 RMK-2357,04-Mar-25,Gold,Hossam,Pass,M.Basiuony,Passed,Mar,2025
@@ -1498,7 +1498,7 @@ RMK-2403,22-Apr-25,Gold,Hossam,Pass,M.Basiuony,Passed,Apr,2025
 CTS-20,23-Apr-25,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,Apr,2025
 RMK-2407,23-Apr-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Apr,2025
 RMK-2409,23-Apr-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Apr,2025
-CTS-27,23-Apr-25,Diamond,A.Lotfy,Reject,M.Basiuony,Data error,Apr,2025
+CTS-27,23-Apr-25,Diamond,A.Lotfy,Reject,M.Basiuony,Data Entry Mistake,Apr,2025
 RMK-2413,27-Apr-25,Platinum,Hossam,Reject,M.Basiuony,QC SIM Found,Apr,2025
 RMK-2419,28-Apr-25,Diamond,Fady,Pass,Ehab Sadar,Passed,Apr,2025
 RMK-2420,28-Apr-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Apr,2025
@@ -1512,7 +1512,7 @@ RMK-2411,29-Apr-25,Diamond,Hossam,Pass,Ehab Sadar,Passed,Apr,2025
 RMK-2415,29-Apr-25,Platinum,Hossam,Pass,Ehab Sadar,Passed,Apr,2025
 RMK-2404,29-Apr-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Apr,2025
 RSZ-68,29-Apr-25,Platinum,Hossam,Pass,M.Basiuony,Passed,Apr,2025
-RSZ-69,29-Apr-25,Diamond,Fady,Reject,M.Basiuony,Data error,Apr,2025
+RSZ-69,29-Apr-25,Diamond,Fady,Reject,M.Basiuony,Data Entry Mistake,Apr,2025
 RMK-2422,30-Apr-25,Gold,Fady,Pass,Ehab Sadar,Passed,Apr,2025
 RMK-2421,30-Apr-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Apr,2025
 UHO-32,30-Apr-25,Diamond,A.Lotfy,Pass,Ehab Sadar,Passed,Apr,2025
@@ -1547,7 +1547,7 @@ RMK-2458,11-May-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,May,2025
 ORC-15,11-May-25,Platinum,Hatem,Pass,M.Basiuony,Passed,May,2025
 RMK-2459,11-May-25,Gold,Hatem,Pass,Ehab Sadar,Passed,May,2025
 RMK-2461,11-May-25,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,May,2025
-RSZ-63,11-May-25,Gold,Hossam,Reject,Ehab Sadar,Screen Issue,May,2025
+RSZ-63,11-May-25,Gold,Hossam,Reject,Ehab Sadar,Exception Granted,May,2025
 RMK-2448,11-May-25,Gold,Hatem,Reject,Ehab Sadar,Label printing Issue,May,2025
 RMK-2455,12-May-25,Gold,Fady,Pass,Ehab Sadar,Passed,May,2025
 RMK-2457,12-May-25,Gold,Hatem,Pass,Ehab Sadar,Passed,May,2025
@@ -1613,8 +1613,8 @@ RMK-2467,03-Jun-25,Gold,Hossam,Reject,M.Basiuony,Touch unstable,Jun,2025
 RMK-2465,04-Jun-25,Gold,Hatem,Pass,M.Basiuony,Passed,Jun,2025
 RSZ-70,04-Jun-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Jun,2025
 OMH-6,15-Jun-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Jun,2025
-CTS-2,18-Jun-25,Platinum,A.Lotfy,Reject,Ehab Sadar,Camera Issue,Jun,2025
-RMK-2468,19-Jun-25,Gold,A.Lotfy,Reject,M.Basiuony,Uncompleted QC Comment,Jun,2025
+CTS-2,18-Jun-25,Platinum,A.Lotfy,Reject,Ehab Sadar,Uncompleted QC Comment,Jun,2025
+RMK-2468,19-Jun-25,Gold,A.Lotfy,Reject,M.Basiuony,Exception Granted,Jun,2025
 RMK-2504,22-Jun-25,Diamond,Hossam,Pass,M.Basiuony,Passed,Jun,2025
 RMK-2499,22-Jun-25,Platinum,Hatem,Pass,Ehab Sadar,Passed,Jun,2025
 RMK-2501,22-Jun-25,Platinum,Hatem,Pass,Ehab Sadar,Passed,Jun,2025
@@ -1730,7 +1730,7 @@ ORC-32,11-Aug-25,Gold,M.Samir,Pass,M.Basiuony,Passed,Aug,2025
 RMK-2588,11-Aug-25,Gold,A.Lotfy,Reject,M.Basiuony,Battery drain Issue,Aug,2025
 ORC-34,11-Aug-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Aug,2025
 RMK-2563,11-Aug-25,Gold,Hossam,Pass,M.Basiuony,Passed,Aug,2025
-RMK-2566,11-Aug-25,Gold,A.Lotfy,Reject,M.Basiuony,Data error,Aug,2025
+RMK-2566,11-Aug-25,Gold,A.Lotfy,Reject,M.Basiuony,Data error (SIM-Locked),Aug,2025
 RMK-2575,11-Aug-25,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2576,11-Aug-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2577,11-Aug-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Aug,2025
@@ -1753,14 +1753,14 @@ RMK-2616,12-Aug-25,Platinum,Hossam,Pass,M.Basiuony,Passed,Aug,2025
 RMK-2574,12-Aug-25,Platinum,Hatem,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2626,12-Aug-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2582,13-Aug-25,Gold,M.Samir,Pass,Ehab Sadar,Passed,Aug,2025
-RMK-2583,13-Aug-25,Platinum,M.Samir,Reject,Ehab Sadar,Data error,Aug,2025
+RMK-2583,13-Aug-25,Platinum,M.Samir,Reject,Ehab Sadar,Data error (SIM-Locked),Aug,2025
 RMK-2584,13-Aug-25,Gold,M.Samir,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2628,13-Aug-25,Platinum,Hossam,Pass,M.Basiuony,Passed,Aug,2025
 RMK-2543,13-Aug-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2585,13-Aug-25,Gold,M.Samir,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2596,13-Aug-25,Gold,M.Samir,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2598,13-Aug-25,Gold,M.Samir,Pass,Ehab Sadar,Passed,Aug,2025
-RSZ-91,13-Aug-25,Platinum,M.Samir,Reject,Ehab Sadar,Data error,Aug,2025
+RSZ-91,13-Aug-25,Platinum,M.Samir,Reject,Ehab Sadar,Data error (SIM-Locked),Aug,2025
 RSZ-92,13-Aug-25,Platinum,M.Samir,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2618,13-Aug-25,Gold,Hatem,Pass,Ehab Sadar,Passed,Aug,2025
 UHO-45,13-Aug-25,Diamond,A.Lotfy,Pass,Ehab Sadar,Passed,Aug,2025
@@ -1777,7 +1777,7 @@ RMK-2622,14-Aug-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2624,14-Aug-25,Gold,Hatem,Pass,Ehab Sadar,Passed,Aug,2025
 RMK-2625,18-Aug-25,Platinum,Hossam,Pass,M.Basiuony,Passed,Aug,2025
 RMK-2632,24-Aug-25,Platinum,Hatem,Pass,M.Basiuony,Passed,Aug,2025
-RSD-74,27-Aug-25,Gold,A.Lotfy,Reject,M.Basiuony,Uncompleted QC Comment,Aug,2025
+RSD-74,27-Aug-25,Gold,A.Lotfy,Reject,M.Basiuony,Exception Granted,Aug,2025
 UHO-46,31-Aug-25,Platinum,A.Lotfy,Reject,M.Basiuony,Label printing Issue,Aug,2025
 RSD-75,01-Sep-25,Platinum,Hossam,Pass,Ehab Sadar,Passed,Sep,2025
 RMK-2635,02-Sep-25,Diamond,A.Lotfy,Pass,Ehab Sadar,Passed,Sep,2025
@@ -1824,7 +1824,7 @@ RMK-2682,09-Sep-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Sep,2025
 RMK-2659,09-Sep-25,Gold,A.Lotfy,Pass,M.elsayed,Passed,Sep,2025
 ORC-37,09-Sep-25,Gold,Hossam,Pass,M.Basiuony,Passed,Sep,2025
 ORC-38,10-Sep-25,Gold,Hatem,Reject,M.elsayed,Uncompleted QC Comment,Sep,2025
-RMK-2669,10-Sep-25,Gold,Hatem,Reject,M.Basiuony,Uncompleted QC Comment,Sep,2025
+RMK-2669,10-Sep-25,Gold,Hatem,Reject,M.Basiuony,Exception Granted,Sep,2025
 RMK-2670,10-Sep-25,Gold,Hatem,Pass,M.Basiuony,Passed,Sep,2025
 RMK-2683,10-Sep-25,Platinum,Hossam,Pass,M.elsayed,Passed,Sep,2025
 RMK-2684,10-Sep-25,Gold,Hossam,Pass,M.Basiuony,Passed,Sep,2025
@@ -1967,7 +1967,7 @@ ORC-61,14-Oct-25,Platinum,Hatem,Pass,M.Basiuony,Passed,Oct,2025
 ORC-67,14-Oct-25,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,Oct,2025
 RMK-2759,14-Oct-25,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2025
 RSZ-111,14-Oct-25,Gold,Hatem,Pass,Ehab Sadar,Passed,Oct,2025
-RMK-2764,15-Oct-25,Platinum,Hatem,Reject,Ehab Sadar,Mismatch simtray,Oct,2025
+RMK-2764,15-Oct-25,Platinum,Hatem,Reject,Ehab Sadar,Uncompleted QC Comment,Oct,2025
 RSZ-113,15-Oct-25,Diamond,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2025
 UHO-59,15-Oct-25,Platinum,Hatem,Pass,Ehab Sadar,Passed,Oct,2025
 UHO-60,15-Oct-25,Gold,Hossam,Reject,Ehab Sadar,Water proof Issue,Oct,2025
@@ -2011,7 +2011,7 @@ RSD-82,22-Oct-25,Platinum,Hossam,Pass,Ehab Sadar,Passed,Oct,2025
 VSO-4,22-Oct-25,Gold,Hatem,Pass,Ehab Sadar,Passed,Oct,2025
 RMK-2784,22-Oct-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Oct,2025
 RMK-2787,23-Oct-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Oct,2025
-RMK-2788,23-Oct-25,Diamond,Hatem,Reject,M.Basiuony,Uncompleted QC Comment,Oct,2025
+RMK-2788,23-Oct-25,Diamond,Hatem,Reject,M.Basiuony,Exception Granted,Oct,2025
 RSD-81,26-Oct-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2025
 RMK-2789,26-Oct-25,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,Oct,2025
 RMK-2790,26-Oct-25,Platinum,Hatem,Pass,Ehab Sadar,Passed,Oct,2025
@@ -2029,7 +2029,7 @@ ORC-70,28-Oct-25,Gold,Hossam,Reject,M.Basiuony,Battery drain Issue,Oct,2025
 ORC-71,28-Oct-25,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,Oct,2025
 UHO-61,29-Oct-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Oct,2025
 UHO-62,29-Oct-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2025
-ORC-68,30-Oct-25,Platinum,Hatem,Reject,Ehab Sadar,Uncompleted QC Comment,Oct,2025
+ORC-68,30-Oct-25,Platinum,Hatem,Reject,Ehab Sadar,Exception Granted,Oct,2025
 RMK-2802,30-Oct-25,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Oct,2025
 ORC-72,30-Oct-25,Platinum,Hossam,Pass,M.Basiuony,Passed,Oct,2025
 ORC-73,30-Oct-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Oct,2025
@@ -2099,7 +2099,7 @@ ORC-91,24-Nov-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Nov,2025
 RMK-2833,25-Nov-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Nov,2025
 UHO-84,25-Nov-25,Platinum,Hatem,Reject,M.Basiuony,Screws Issue,Nov,2025
 RMK-2834,26-Nov-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Nov,2025
-UHO-65,26-Nov-25,Gold,Hossam,Reject,M.Basiuony,Cleaning Issue,Nov,2025
+UHO-65,26-Nov-25,Gold,Hossam,Reject,M.Basiuony,Battery drain Issue,Nov,2025
 UHO-71,26-Nov-25,Gold,Hatem,Pass,M.Basiuony,Passed,Nov,2025
 UHO-76,26-Nov-25,Diamond,Hatem,Pass,M.Basiuony,Passed,Nov,2025
 RMK-2800,26-Nov-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Nov,2025
@@ -2217,7 +2217,7 @@ RMK-2911,15-Dec-25,Platinum,Hatem,Pass,M.Basiuony,Passed,Dec,2025
 RMK-2918,15-Dec-25,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,Dec,2025
 RMK-2915,16-Dec-25,Gold,Hossam,Pass,Ehab Sadar,Passed,Dec,2025
 RSZ-134,16-Dec-25,Gold,Hatem,Pass,Ehab Sadar,Passed,Dec,2025
-VSO-15,16-Dec-25,Gold,Hatem,Reject,Ehab Sadar,Camera Issue,Dec,2025
+VSO-15,16-Dec-25,Gold,Hatem,Reject,Ehab Sadar,Uncompleted QC Comment,Dec,2025
 RMK-2917,16-Dec-25,Platinum,Hossam,Pass,M.Basiuony,Passed,Dec,2025
 OMH-28,16-Dec-25,Gold,Hossam,Pass,M.Basiuony,Passed,Dec,2025
 ORC-96,16-Dec-25,Gold,Hatem,Pass,M.Basiuony,Passed,Dec,2025
@@ -2234,7 +2234,7 @@ VSO-11,17-Dec-25,Gold,Hatem,Pass,M.Basiuony,Passed,Dec,2025
 RMK-2886,17-Dec-25,Gold,Hatem,Pass,M.Basiuony,Passed,Dec,2025
 RMK-2913,17-Dec-25,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Dec,2025
 UHO-100,17-Dec-25,Platinum,Hatem,Pass,M.Basiuony,Passed,Dec,2025
-RMK-2925,18-Dec-25,Platinum,A.Lotfy,Reject,Ehab Sadar,Camera Issue,Dec,2025
+RMK-2925,18-Dec-25,Platinum,A.Lotfy,Reject,Ehab Sadar,Uncompleted QC Comment,Dec,2025
 RMK-2924,18-Dec-25,Diamond,Hatem,Pass,Ehab Sadar,Passed,Dec,2025
 RMK-2926,18-Dec-25,Diamond,Hatem,Pass,Ehab Sadar,Passed,Dec,2025
 RMK-2914,18-Dec-25,Platinum,A.Lotfy,Pass,Ehab Sadar,Passed,Dec,2025
@@ -2416,7 +2416,7 @@ RMK-3038,18-May-26,Gold,A.Lotfy,Pass,M.Basiuony,Passed,May,2026
 OMH-36,19-May-26,Platinum,Hossam,Pass,M.Basiuony,Passed,May,2026
 RMK-3035,19-May-26,Platinum,Hossam,Reject,M.Basiuony,Battery drain Issue,May,2026
 UHO-111,19-May-26,Gold,A.Lotfy,Pass,M.Basiuony,Passed,May,2026
-RMK-3036,19-May-26,Gold,Hossam,Reject,M.Basiuony,Screen Issue,May,2026
+RMK-3036,19-May-26,Gold,Hossam,Reject,M.Basiuony,Exception Granted,May,2026
 ORC-128,20-May-26,Platinum,Hossam,Pass,M.Basiuony,Passed,May,2026
 ORC-119,21-May-26,Platinum,A.Lotfy,Pass,M.Basiuony,Passed,May,2026
 VSO-26,21-May-26,Gold,A.Lotfy,Pass,M.Basiuony,Passed,May,2026
@@ -2474,7 +2474,7 @@ RMK-3091,29-Jun-26,Gold,Hossam,Pass,Ehab Sadar,Passed,Jun,2026
 RMK-3093,29-Jun-26,Gold,Hossam,Pass,M.Basiuony,Passed,Jun,2026
 RMK-3099,29-Jun-26,Gold,Hossam,Pass,M.Basiuony,Passed,Jun,2026
 RMK-3100,29-Jun-26,Gold,A.Lotfy,Pass,M.Basiuony,Passed,Jun,2026
-OHL-13,29-Jun-26,Diamond,Hossam,Reject,M.Basiuony,Grade Upgrade,Jun,2026
+OHL-13,29-Jun-26,Diamond,Hossam,Reject,M.Basiuony,Exception Granted,Jun,2026
 RMK-3092,29-Jun-26,Gold,A.Lotfy,Pass,Ehab Sadar,Passed,Jun,2026
 RMK-3098,29-Jun-26,Gold,Hossam,Pass,Ehab Sadar,Passed,Jun,2026
 RMK-3101,29-Jun-26,Platinum,Hossam,Pass,M.Basiuony,Passed,Jun,2026
